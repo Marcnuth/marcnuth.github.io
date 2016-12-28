@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Marcnuth's blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="../stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Python Tips/Tricks & FAQ</h1>
+      <h2 class="project-tagline">邮箱: marcnuth(AT)foxmail.com </h2>
+    </section>
+
+    <section class="main-content">
+
+	<!-- Contents here -->
+
+	<h3 id="读写">读写</h3>
+
+	<ul>
+	    <li>for line in opened_file:  逐行读取，读一行加载一行</li>
+	    <li>for line in opened_file.readlines(): 逐行读取，将所有内容加载到内存</li>
+	    <li>for row in cursor: 逐row读取，读一行加载一行</li>
+	    <li>for row in cursor.fetchall() : 逐row读取，将所有内容加载到内存</li>
+	</ul>
+
+
+
+	<h3 id="statistics">Statistics</h3>
+
+
+
+	<h4 id="seaborn">Seaborn</h4>
+
+	<blockquote>
+	    <p>注意: 在notebook中画图: %matplotlib inline</p>
+	</blockquote>
+
+	<ul>
+	    <li>画单个变量分布图: sns.distplot:</li>
+	    <li>画两个变量分布图+散点图: sns.jointplot</li>
+	    <li>画多个变量分布图+散点图: sns.pairplot</li>
+	</ul>
+
+	<blockquote>
+	    <p>参考: <a href="http://seaborn.pydata.org/tutorial/distributions.html">http://seaborn.pydata.org/tutorial/distributions.html</a></p>
+	</blockquote>
+
+
+
+	<h4 id="matplot">matplot</h4>
+
+	<p></p><ul> <br>
+	    <li>acf图: matplotlib.pyplot.acorr <br></li></ul><p></p>
+
+	    <blockquote>
+		参考: <a href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.acorr">http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.acorr</a>
+		
+	    </blockquote>
+
+	    <h4 id="statsmodels">Statsmodels</h4>
+
+	    <p></p><ul> <br>
+		<li>acf图: statsmodels.tsa.stattools.acf <br></li></ul><p></p>
+
+		<blockquote>
+		    <p>参考:  <br>
+			<a href="http://statsmodels.sourceforge.net/stable/examples/notebooks/generated/tsa_arma_0.html"></a><a href="http://statsmodels.sourceforge.net/stable/examples/notebooks/generated/tsa_arma_0.html">http://statsmodels.sourceforge.net/stable/examples/notebooks/generated/tsa_arma_0.html</a> <br>
+			<a href="http://conference.scipy.org/scipy2011/slides/mckinney_time_series.pdf"></a><a href="http://conference.scipy.org/scipy2011/slides/mckinney_time_series.pdf">http://conference.scipy.org/scipy2011/slides/mckinney_time_series.pdf</a>
+		    </p>
+		</blockquote>
+
+
+	
+      <footer class="site-footer">
+
+        <span class="site-footer-credits">上次更新: 2016/12/28</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
