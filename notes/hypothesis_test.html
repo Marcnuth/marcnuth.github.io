@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>谈谈假设检验</title>
+<!-- 2017-02-10 Fri 14:54 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Marcnuth" />
+<meta  name="keywords" content="数理统计 假设检验" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">谈谈假设检验</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 简介</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 假设检验存在的意义是什么？</a></li>
+<li><a href="#sec-1-2">1.2. 假设检验能处理什么样的问题？</a></li>
+<li><a href="#sec-1-3">1.3. 如何应用假设检验？</a></li>
+<li><a href="#sec-1-4">1.4. 检验统计量的选择</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. <span class="todo TODO">TODO</span> 检验统计量和拒绝域</a>
+<ul>
+<li><a href="#sec-2-1">2.1. t-检验</a></li>
+<li><a href="#sec-2-2">2.2. z-检验</a></li>
+<li><a href="#sec-2-3">2.3. 卡方检验</a></li>
+<li><a href="#sec-2-4">2.4. F-检验</a></li>
+<li><a href="#sec-2-5">2.5. 偏度峰度检验</a></li>
+</ul>
+</li>
+<li><a href="#sec-3">3. <span class="todo TODO">TODO</span> 显著性检验和P值检验</a></li>
+</ul>
+</div>
+</div>
+<p>
+<i>本文由作者原创，未经允许禁止转载。联系hxianxian(at)qq.com了解转载事宜。</i>
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 简介</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 假设检验存在的意义是什么？</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+假设检验属于推断统计，是在给定样本容量和置信水平的条件下，判断某个假设是否成立的一种统计方法。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 假设检验能处理什么样的问题？</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+假设检验需要证明某个假设是否成立的场景。例如：
+</p>
+<ul class="org-ul">
+<li>现实生活中，证明两批次牛奶的质量相同
+</li>
+<li>机器学习中，证明某个模型的比另一个模型更好
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> 如何应用假设检验？</h3>
+<div class="outline-text-3" id="text-1-3">
+<p>
+应用假设检验有如下前提:
+</p>
+<ul class="org-ul">
+<li>给出置信水平
+</li>
+<li>确定样本容量
+</li>
+<li>确定检验统计量
+</li>
+</ul>
+
+<p>
+应用假设检验的步骤如下:
+</p>
+<ol class="org-ol">
+<li>提出原假设(零假设)H0和备择假设H1
+</li>
+<li>给定显著性水平 &alpha; 和样本容量 n
+</li>
+<li>确定检验统计量和拒绝域的形式
+</li>
+<li>根据 \(P(refuse\ H_0\ when\ it's\ truth) \le \alpha\)
+</li>
+<li>根据样本的观测值确定P是否落于拒绝域，从而接受或拒绝H0
+</li>
+</ol>
+
+<p>
+上面的步骤中，值得一提的是：
+</p>
+<ul class="org-ul">
+<li>第一步中，原假设通常用两种情况。例如:
+<ul class="org-ul">
+<li>假设H0为 x = &mu;，则拒绝域是"!="，即为两侧，称之为 <b>双边假设检验</b>
+</li>
+<li>假设H0为 x &lt;= &mu; 或 x &gt;= &mu;， 则拒绝域为"&gt;"或"&lt;"，即为单侧，称之
+为 <b>单边假设检验</b>
+</li>
+</ul>
+</li>
+<li>第三步中，检验统计量和拒绝域将会在后面作为重点详细讨论。
+</li>
+<li>第四步中，"refuse H0 when it's true"即为“弃真”，与之对应的为“取伪”，
+都是针对H0而言。也就是说：
+<ul class="org-ul">
+<li>弃真是说，当H0是真的时候，我们却拒绝了该假设。弃真也称为第I类错误。
+</li>
+<li>取伪是说，当H0是假的时候，我们却接受了该假设。取伪也称为第II类错误。
+</li>
+</ul>
+<p>
+弃真和取伪是相互对立的，我们尽量避免弃真时就会增加取伪出现的概率。在
+显著性检验中，我们主要考虑和控制弃真的概率，不考虑取伪的概率。这也就
+是为什么在第四步给出的不等式中，左侧的概率是弃真的概率，而右侧是给出
+的显著性水平！
+</p>
+</li>
+<li>第五步中，通过第四部我们可以确定接受或拒绝H0的阀值，而在第五步中，我
+们可以根据样本的观测值来计算出某个统计量，然后判断该统计量和阀值的大
+小，以接受或拒绝H0
+</li>
+</ul>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> 检验统计量的选择</h3>
+<div class="outline-text-3" id="text-1-4">
+
+<div class="figure">
+<p><img src="./imgs/hypothesis_test_choose_statistics.svg" alt="hypothesis_test_choose_statistics.svg" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> 检验统计量和拒绝域</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> t-检验</h3>
+</div>
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> z-检验</h3>
+</div>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 卡方检验</h3>
+</div>
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> F-检验</h3>
+</div>
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 偏度峰度检验</h3>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> 显著性检验和P值检验</h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Marcnuth</p>
+<p class="date">Created: 2017-02-10 Fri 14:54</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

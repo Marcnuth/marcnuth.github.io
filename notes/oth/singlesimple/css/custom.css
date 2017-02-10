@@ -1,0 +1,40 @@
+body {
+    margin: 0px 10%;
+}
+
+h1 {
+    width: 125%;
+    margin: 0 0 50px -10%;
+    padding: 80px 0;
+    color: #000;
+    text-align: center;
+    background-color: #35EC91;
+    background-image: linear-gradient(120deg, #A2DED0, #42DA8E);
+}
+
+body table {
+    margin:0 auto;
+}
+
+
+#postamble {
+    margin:0 auto;
+    text-align:end;
+}
+
+#content ul {
+    margin: 0 10%;
+}
+
+#content ul li {
+    line-height: 250%;
+}
+
+
+#content ul a {
+    font-size:18px;
+}
+
+#content ul i {
+    padding-left:10%;
+}

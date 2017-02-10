@@ -21,3 +21,9 @@
 - acf图: statsmodels.tsa.stattools.acf
 > 参考: http://statsmodels.sourceforge.net/stable/examples/notebooks/generated/tsa_arma_0.html
 > 参考: http://conference.scipy.org/scipy2011/slides/mckinney_time_series.pdf
+
+
+### Pandas
+#### Exceptions
+- UserWarning: Boolean Series key will be reindexed to match DataFrame index.
+> Change df[df.time >= 0][df <= 30] to df[(df.time >=0) & (df.time <=30)]
