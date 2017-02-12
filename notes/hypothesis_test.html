@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>谈谈假设检验</title>
-<!-- 2017-02-10 Fri 14:54 -->
+<!-- 2017-02-12 Sun 20:14 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -199,21 +199,21 @@ for the JavaScript code in this tag.
 <li><a href="#sec-1-4">1.4. 检验统计量的选择</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2. <span class="todo TODO">TODO</span> 检验统计量和拒绝域</a>
+<li><a href="#sec-2">2. 检验统计量和拒绝域</a>
 <ul>
-<li><a href="#sec-2-1">2.1. t-检验</a></li>
-<li><a href="#sec-2-2">2.2. z-检验</a></li>
+<li><a href="#sec-2-1">2.1. z-检验</a></li>
+<li><a href="#sec-2-2">2.2. t-检验</a></li>
 <li><a href="#sec-2-3">2.3. 卡方检验</a></li>
 <li><a href="#sec-2-4">2.4. F-检验</a></li>
 <li><a href="#sec-2-5">2.5. 偏度峰度检验</a></li>
 </ul>
 </li>
-<li><a href="#sec-3">3. <span class="todo TODO">TODO</span> 显著性检验和P值检验</a></li>
+<li><a href="#sec-3">3. 显著性检验和P值检验</a></li>
 </ul>
 </div>
 </div>
 <p>
-<i>本文由作者原创，未经允许禁止转载。联系hxianxian(at)qq.com了解转载事宜。</i>
+<i>本文由作者原创，未经允许禁止转载。联系marcnuth(AT)foxmail.com了解转载事宜。</i>
 </p>
 
 <div id="outline-container-sec-1" class="outline-2">
@@ -313,7 +313,6 @@ for the JavaScript code in this tag.
 </div>
 
 
-
 <div id="outline-container-sec-1-4" class="outline-3">
 <h3 id="sec-1-4"><span class="section-number-3">1.4</span> 检验统计量的选择</h3>
 <div class="outline-text-3" id="text-1-4">
@@ -328,34 +327,389 @@ for the JavaScript code in this tag.
 
 
 <div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> 检验统计量和拒绝域</h2>
+<h2 id="sec-2"><span class="section-number-2">2</span> 检验统计量和拒绝域</h2>
 <div class="outline-text-2" id="text-2">
 </div><div id="outline-container-sec-2-1" class="outline-3">
-<h3 id="sec-2-1"><span class="section-number-3">2.1</span> t-检验</h3>
-</div>
-<div id="outline-container-sec-2-2" class="outline-3">
-<h3 id="sec-2-2"><span class="section-number-3">2.2</span> z-检验</h3>
-</div>
-<div id="outline-container-sec-2-3" class="outline-3">
-<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 卡方检验</h3>
-</div>
-<div id="outline-container-sec-2-4" class="outline-3">
-<h3 id="sec-2-4"><span class="section-number-3">2.4</span> F-检验</h3>
-</div>
-<div id="outline-container-sec-2-5" class="outline-3">
-<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 偏度峰度检验</h3>
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> z-检验</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+z检验用于针对均值的检验，使用前提:
+</p>
+<ul class="org-ul">
+<li>正态总体
+</li>
+<li>已知方差
+</li>
+</ul>
+
+
+<p>
+检验统计量:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">检验对象</th>
+<th scope="col" class="left">统计量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">单个正态总体的均值</td>
+<td class="left">$$ Z = \frac{\overline{X} - \mu_0}{\sigma / \sqrt(n)} $$</td>
+</tr>
+
+<tr>
+<td class="left">2个正态总的均值差</td>
+<td class="left">$$ Z = \frac{\overline{X} - \overline{Y} - \delta}{\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}} $$</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+拒绝域:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">原假设</th>
+<th scope="col" class="left">拒绝域</th>
+<th scope="col" class="left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">$$ \mu > \mu_0 \ 或\ \mu_1 - \mu_2 > \sigma $$</td>
+<td class="left">$$ z \ge z_\alpha $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">$$ \mu < \mu_0 \ 或\ \mu_1 - \mu_2 < \sigma $$</td>
+<td class="left">$$ z \le -z_\alpha $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">$$ \mu \ne \mu_0 \ 或\ \mu_1 - \mu_2 \ne \sigma $$</td>
+<td class="left">$$ abs(z) \ge z_{\alpha/2} $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> t-检验</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+t检验用于针对均值的检验，使用前提：
+</p>
+<ul class="org-ul">
+<li>正态总体
+</li>
+</ul>
+
+<p>
+可以看到，t检验和z检验的区别在于 <b>是否已知方差</b> 。事实上，我们可以将t检验看作z检验的变体，一种更“泛化”的检验形式。
+在下面的统计量中，你将防线，t检验和z检验及其相似，不同点在于方差采用了估计量。
+</p>
+
+<p>
+检验统计量:
+</p>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">检验对象</th>
+<th scope="col" class="left">统计量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">单个正态总体的均值</td>
+<td class="left">$$ t = \frac{\overline{X} - \mu_0}{S / \sqrt(n)} $$</td>
+</tr>
+
+<tr>
+<td class="left">2个正态总的均值差</td>
+<td class="left">$$ t = \frac{\overline{X} - \overline{Y} - \delta}{S_w\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}} $$ $$ S_w = \frac{(n_1 - 1)S_1^2 + (n_2 - 1)S_2^2}{n_1 + n_2 + 2}$$</td>
+</tr>
+
+<tr>
+<td class="left">成对数据</td>
+<td class="left">$$ t = \frac{\overline{D} - 0}{S_D / \sqrt(n)} $$</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+拒绝域:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">原假设</th>
+<th scope="col" class="left">拒绝域</th>
+<th scope="col" class="left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">$$ \mu < \mu_0 \ 或\ \mu_1 - \mu_2 < \sigma $$</td>
+<td class="left">$$ t \ge t_\alpha(n-1) 或 t \ge t_\alpha(n_1 + n_2 + -1)$$</td>
+<td class="left">对于成对数据，原假设为单个正态的变种： \(\mu_D < 0\)</td>
+</tr>
+
+<tr>
+<td class="left">$$ \mu > \mu_0 \ 或\ \mu_1 - \mu_2 > \sigma $$</td>
+<td class="left">$$ t \le -t_\alpha(n-1) 或 t \le t_\alpha(n_1 + n_2 + -1)$$</td>
+<td class="left">成对数据: \(\mu_D > 0\)</td>
+</tr>
+
+<tr>
+<td class="left">$$ \mu \ne \mu_0 \ 或\ \mu_1 - \mu_2 \ne \sigma $$</td>
+<td class="left">$$ abs(t) \ge t_{\alpha/2}(n-1) 或 abs(t) \ge t_{\alpha/2}(n_1 + n_2 + -1) $$</td>
+<td class="left">成对数据: \(\mu_D \ne 0\)</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>
+成对数据与单个正态总体检验的关系:
+可以看到，对于成对数据的（均值差的）检验，无论从统计量还是拒绝域来看，都与单个正态总体的均值检验极其相似。为什么呢？
+我们可以这样思考，对于成对数据的检验，我们认为两个值的差值为正态分布，但我们不知道方差究竟有多大。因此从这个角度上说，成对数据对于均值差的检验，即为对正态总体的均值检验的变种。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 卡方检验</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+检验统计量:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">检验对象</th>
+<th scope="col" class="left">统计量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">单个样本的方差</td>
+<td class="left">$$ \chi^2 = \frac{(n-1)S^2}{\sigma_0^2} $$</td>
+</tr>
+
+<tr>
+<td class="left">样本分布</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+拒绝域:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">原假设</th>
+<th scope="col" class="left">拒绝域</th>
+<th scope="col" class="left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">$$ \sigma^2 \le \sigma_0^2 $$</td>
+<td class="left">$$ \chi^2 \ge \chi_\alpha^2(n-1) $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">$$ \sigma^2 \ge \sigma_0^2 $$</td>
+<td class="left">$$ \chi^2 \le \chi_{1-\alpha}^2(n-1) $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">$$ \sigma^2 = \sigma_0^2 $$</td>
+<td class="left">$$ \chi^2 \ge \chi_{\alpha/2}^2(n-1) 或 \chi^2 \le \chi_{1 - \alpha/2}^2(n-1)$$</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> F-检验</h3>
+<div class="outline-text-3" id="text-2-4">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">检验对象</th>
+<th scope="col" class="left">统计量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">两个样本的方差大小</td>
+<td class="left">$$ F = \frac{S_1^2}{S_2^2} $$</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+拒绝域:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">原假设</th>
+<th scope="col" class="left">拒绝域</th>
+<th scope="col" class="left">备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">$$ \sigma^2 \le \sigma_0^2 $$</td>
+<td class="left">$$ F \ge F_\alpha(n_1 -1, n_2 - 1)     $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">$$ \sigma^2 \ge \sigma_0^2 $$</td>
+<td class="left">$$ F \ge F_{1-\alpha}(n_1 -1, n_2 - 1)     $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">$$ \sigma^2 = \sigma_0^2 $$</td>
+<td class="left">$$ F \ge F_{\alpha/2}(n_1 -1, n_2 - 1) 或  F \ge F_{1-\alpha/2}(n_1 -1, n_2 - 1)    $$</td>
+<td class="left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5"><span class="section-number-3">2.5</span> 偏度峰度检验</h3>
+<div class="outline-text-3" id="text-2-5">
+<p>
+偏度峰度检验是用于检验样本是否为正态总体的较好办法，尽管 $ &chi;<sup>2</sup>$检验也可以用作样本正态性的检验，但是卡方检验较容易犯第二类错误(取伪)，而偏度峰度检验更为有效。
+</p>
+</div>
+</div>
+</div>
+
+
 <div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> <span class="todo TODO">TODO</span> 显著性检验和P值检验</h2>
+<h2 id="sec-3"><span class="section-number-2">3</span> 显著性检验和P值检验</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+在显著性检验中，最核心的一步是根据 <b>弃真的概率是否小于等于显著性水平</b> 来判断是否接受原假设。
+这种情况下，需要给定一个显著性水平。
+但是很多情况下，我们想知道一个最小的显著性水平，而不是给定一个单纯的阈值来接受或者拒绝。
+显著性水平最小，即当表达式 P(弃真) = &alpha; 成立时取得，所以 *最小的显著性水平即弃真的概率*，而这个最小的显著性水平称之为P值。我们将这种检验称之为P值检验。
+</p>
+
+<p>
+显而易见的，P值检验和显著性检验几乎是同一回事，区别在于思考的方式不同:
+</p>
+<ul class="org-ul">
+<li>显著性检验通过给定阈值，接受或拒绝原假设
+</li>
+<li>P值检验通过计算最小显著性水平(弃真概率)，获得P值。
+</li>
+</ul>
+
+<p>
+当然，实际应用中，我们常通过 P&lt;= 0.05 来判断是否显著，从而接受或拒绝原假设。此时又与显著性检验一致了，其中 &alpha; = 0.05。
+</p>
+</div>
 </div>
 </div>
 <div id="postamble" class="status">
-<p class="author">Author: Marcnuth</p>
-<p class="date">Created: 2017-02-10 Fri 14:54</p>
-<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.5.1 (<a href="http://orgmode.org">Org</a> mode 8.2.10)</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+<div class="postamble"><p class="author">Marcnuth</p><p class="email"><a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-12 Sun 20:14</p></div>
 </div>
 </body>
 </html>
