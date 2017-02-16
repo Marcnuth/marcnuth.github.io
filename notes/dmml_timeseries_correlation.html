@@ -3,8 +3,8 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>dmml_timeseries_correlation</title>
-<!-- 2017-02-14 Tue 21:30 -->
+<title>Correlation Analysis in Time Series</title>
+<!-- 2017-02-16 Thu 21:46 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -140,34 +140,99 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
 </head>
 <body>
 <div id="content">
-<h1 class="title">dmml_timeseries_correlation</h1>
+<h1 class="title">Correlation Analysis in Time Series</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1. <span class="todo TODO">TODO</span> Introductions</a>
+<li><a href="#sec-1">1. Introductions</a>
 <ul>
 <li><a href="#sec-1-1">1.1. Concepts</a></li>
-<li><a href="#sec-1-2">1.2. Applications</a></li>
+<li><a href="#sec-1-2">1.2. Applications</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1. Similarity Detection</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2. <span class="todo TODO">TODO</span> Algorithms</a></li>
-<li><a href="#sec-3">3. DTW</a></li>
-<li><a href="#sec-4">4. Fast DTW</a></li>
-<li><a href="#sec-5">5. PPMCC</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. <span class="todo TODO">TODO</span> Algorithms</a>
+<ul>
+<li><a href="#sec-2-1">2.1. DTW</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1. Introduction</a></li>
+<li><a href="#sec-2-1-2">2.1.2. Principles</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2. <span class="todo TODO">TODO</span> Fast DTW</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. Introduction</a></li>
+<li><a href="#sec-2-2-2">2.2.2. Speed-Up: Decrease the search space</a></li>
+<li><a href="#sec-2-2-3">2.2.3. Speed-Up: Data Abstraction</a></li>
+<li><a href="#sec-2-2-4">2.2.4. <span class="todo TODO">TODO</span> Speed-Up: Indexing</a></li>
+<li><a href="#sec-2-2-5">2.2.5. Integrated Algorithm</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. <span class="todo TODO">TODO</span> PPMCC</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
 <p>
-<i>本文由作者原创，未经允许禁止转载。联系marcnuth(AT)foxmail.com了解转载事宜。</i>
+<i>This article is forbidden to publish elsewhere without permission. Contact marcnuth(AT)foxmail.com for permission.</i>
 </p>
 
+<p>
+<i>This article <b>aims for providing introduction</b> for some usauslly used alogorithms when handling correlation in time series. This article <b>won't give detail codes example</b>, make sure you understand this before you read.</i>
+</p>
 
 <div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> <span class="todo TODO">TODO</span> Introductions</h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> Introductions</h2>
 <div class="outline-text-2" id="text-1">
 </div><div id="outline-container-sec-1-1" class="outline-3">
 <h3 id="sec-1-1"><span class="section-number-3">1.1</span> Concepts</h3>
@@ -226,27 +291,296 @@ And generally, when we talk about correlation, we mean the two variable are rele
 
 <div id="outline-container-sec-1-2" class="outline-3">
 <h3 id="sec-1-2"><span class="section-number-3">1.2</span> Applications</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> Similarity Detection</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+Similarity is a kind of correlation, and it's a special case. 
+</p>
+
+<p>
+Suppose this situation:
+</p>
+
+<p>
+Providing a lot of time series with one target time series, we need find the similar series as the target one. 
+</p>
 </div>
 </div>
+</div>
+</div>
+
 
 <div id="outline-container-sec-2" class="outline-2">
 <h2 id="sec-2"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> Algorithms</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> DTW</h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> Introduction</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+DTW<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup> is for Dynamic time wrapping algorithm. DTW could mesure the similarity of two sequence, and it could sussfully handle following situations:
+</p>
+<ul class="org-ul">
+<li>Different <b>scale</b> of two series
+</li>
+<li>Time <b>shifting</b> on two series
+</li>
+<li>Different <b>length</b> of two input series
+</li>
+</ul>
+
+<p>
+DTW's time complexity is <b>\(O(n^2)\)</b>. The most popular application of DTW is in Voice Recognization, Music Recognization.
+</p>
+</div>
 </div>
 
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3"><span class="section-number-2">3</span> DTW</h2>
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> Principles</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+<b><span class="underline">Preconditions:</span></b>
+</p>
+
+<p>
+Suppose there are two sequences S1 and S2, and:
+</p>
+<ul class="org-ul">
+<li>S1 = (a1, a2, a3, a4, &#x2026;, an)
+</li>
+<li>S2 = (b1, b2, b3, b4, &#x2026;, bm)
+</li>
+</ul>
+
+<p>
+Which means:
+</p>
+<ul class="org-ul">
+<li>The length of S1 is n, and the length of S2 is m
+</li>
+<li>S1 is consits of point a1, a2 &#x2026;, S2 is consits of point b1, b2 &#x2026;. 
+</li>
+<li>Generally ai/bi could be a number or a vector
+</li>
+</ul>
+
+<p>
+<b><span class="underline">Details:</span></b>
+</p>
+
+<p>
+Generally, the easiest way to compare two series is make both of them have the same length and compared each point. 
+There are some methods to make them have the same length, such as cuting longer one, or scale the shorter one up, etc.
+However, this kinds of method will lose some features and cannot handling the shifting or scale in a good way, which performs bad in reality.
+</p>
+
+<p>
+The way DTW implements is to <b>calcuate a matrix</b> of the two series. As the length of series are n and m respectively, so the matrix's size will be n*m.
+In the matrix, every element Value(i, j) means the distance between ai(in S1) and bj(in S2). Mathmaticly:
+$$ Value_{i,j} = Distance(a_i, b_j)$$
+In it, distance could be the Euclidean Distance, which is
+$$ Distance(x, y) = (x - y)^2 $$
+</p>
+
+<p>
+As we could see in the expression, the less distance is, the more similar the two values are. 
+</p>
+
+<p>
+From the view of the whole matrix, we can find out <b>a path</b> in the matrix which goes from (1,1) to (n,m),
+and if this path has the minimized cumulative distances, we could take the minimized cumulative distances as the Similarity Level.
+In real application, if we have serveral series, we could use DTW to find the most similar one according to this.
+</p>
+
+<p>
+As you can see in the following graph, the left and top lines are the two series, and our target is to find the path like the one in the right-bottom.
+</p>
+
+
+<div class="figure">
+<p><img src="imgs/dmml_relation_two_series_dtw.png" alt="dmml_relation_two_series_dtw.png" />
+</p>
 </div>
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4"><span class="section-number-2">4</span> Fast DTW</h2>
+
+<p>
+So, how to find out the path? 
+</p>
+
+<p>
+Let's give the path a defination like this:
+$$path = (w_1, w_2, w_3, ..., w_k), max(m,n) \le k < m+n-1$$
+In it, 
+$$ w_i = v_{p,q}$$
+And the cumulative distance(D) of the path could be denoted as:
+$$D = \sum_{k=1}^K(w_k)$$
+</p>
+
+<p>
+\(v_{p,q}\) is the element of the matrix, and i,p,q does not have any relations, we just give some symbols here for convenience.
+</p>
+
+<p>
+Next, let's continue to talk about the path, it's noted that the path should satisfy following conditions:
+</p>
+<ul class="org-ul">
+<li><b>Boundary</b>: the path should start at (1,1), and ends at (n,m), which is, \(w_1 = v_{1,1}\) and \(w_k =v_{n,m}\)
+</li>
+<li><b>Contiunity&amp;Monotonicity</b>: for any \(w_{p-1}=v_{a_1,b_1}\) and \(w_p=v_{a_2,b_2}\), \(w_p\) should be the (up/right/up-right)neighbour elment of \(w_{p-1}\), 
+that's to say, \(0 \le a_2 - a_1 \le 1\) and \(0 \le b_2 - b_1 \le 1\).
+</li>
+</ul>
+
+<p>
+There are still a lot paths who satisfy the above conditions, the minimized cumulative distance, the one we want could be denoted as:
+$$DTW(S1, S2) = min(D_i)$$
+</p>
+
+<p>
+To make up for longer distance, the above equation could be improved as:
+$$DTW(S1, S2) = min(\frac{\sqrt{D_i}}{K})$$
+</p>
+
+<p>
+This equation could be figured out with dynamic programing.
+</p>
+
+<p>
+<b><span class="underline">Brief Summary:</span></b>
+</p>
+
+<p>
+As we can see,  DTW aims to find an path whose cumulative distance is smallest. 
+In fact, <b>different path stands for different "scale up/down" on part of the series</b>, which make the comparesion more flexible.
+Moreover, once we find the smallest distance, we could get the "similarity level" of the two series, which allows us to decide they are similar or not.
+</p>
+</div>
+</div>
 </div>
 
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="section-number-2">5</span> PPMCC</h2>
+
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> <span class="todo TODO">TODO</span> Fast DTW</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> Introduction</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+DTW is an excellent algorithm for validating the similarity, but it's a time-consuming algorithm(\(O(m*n)\)) which makes that bad for bussiness application.
+</p>
+
+<p>
+Usually in bussiness application, the series to compare are not just two but plenty of pairs. 
+Suppose given one target series, and we are going to find the similar series from the left k serries, the time complexity would be \(O(m*n*k)\).
+</p>
+
+<p>
+There are plenty of methods to speed up original DTW algorithm, I will list some popular ones in this part. 
+And those DTW algorithms are improved with different strategy and views, which may inspire you.
+</p>
 </div>
 </div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> Speed-Up: Decrease the search space</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+As we know there is a cost matrix in original DTW and there have already some constriants on it to limit the search space. 
+The constriants could be found in <i>Section DTW</i>. Following graph illustrate the search space, which is occupied by black color:
+</p>
+
+
+<div class="figure">
+<p><img src="imgs/dmml_correlation_fast_dtw_orignal_search_space.png" alt="dmml_correlation_fast_dtw_orignal_search_space.png" />
+</p>
+</div>
+
+<p>
+As you could see in the above graph, the rectangle stands for the cost matrix, and the black blocks means the search space to calculate best path.
+</p>
+<ul class="org-ul">
+<li>in <b>Original</b> DTW algorithm, we have to calculate the whole cost matrix to find the best path.
+</li>
+<li>with <b>Optimize 1</b> and <b>Optimize 2</b>, the search space is decreased, so the DTW could be speed up.
+</li>
+</ul>
+
+<p>
+<b>Optimize 1</b> and <b>Optimize 2</b> is mentioned in Paper<sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup>, read that paper if you are interested in how it works. 
+But please noted that: the two optimization do limit the search space and speed up the DTW, but it <b>does not guarantee</b> for finding out the best path.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> Speed-Up: Data Abstraction</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+This kind of method takes another view to looked into the path-self. 
+The core thought of this method is to simply(sample) the series first, find one best path and then mapped it to the orignal matrix.
+</p>
+
+<p>
+See following graph for illustration:
+</p>
+
+
+<div class="figure">
+<p><img src="imgs/dmml_correlation_fast_dtw_data_abstraction.png" alt="dmml_correlation_fast_dtw_data_abstraction.png" />
+</p>
+</div>
+
+<p>
+As you can see, this method focus on finding a best path on a lower resolution(sampled) cost matrix, and then maps the path to the original matrix.
+This do speed up the DTW, but the disadvantage is as the previous one, it <b>does not guarantee</b> the result is the best path.
+</p>
+
+<p>
+Read more information about this method, please refer to Paper<sup><a id="fnr.2.100" name="fnr.2.100" class="footref" href="#fn.2">2</a></sup>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-4" class="outline-4">
+<h4 id="sec-2-2-4"><span class="section-number-4">2.2.4</span> <span class="todo TODO">TODO</span> Speed-Up: Indexing</h4>
+</div>
+<div id="outline-container-sec-2-2-5" class="outline-4">
+<h4 id="sec-2-2-5"><span class="section-number-4">2.2.5</span> Integrated Algorithm</h4>
+<div class="outline-text-4" id="text-2-2-5">
+<p>
+In paper<sup><a id="fnr.2.100" name="fnr.2.100" class="footref" href="#fn.2">2</a></sup>, an integrated methods are provided for DTW algorithm.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> <span class="todo TODO">TODO</span> PPMCC</h3>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+<a href="https://en.wikipedia.org/wiki/Dynamic_time_warping">WIKI: DTW(Dynamic Time Wrapping)</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p class="footpara">
+<a href="oth/FastDTW_toward_accurate_dynamic_time_warping_in_linear_time_and_space__stan.pdf">Paper: FastDTW: Toward Accurate Dynamic Time Warping in Linear Time and Space</a>
+</p></div>
+
+
+</div>
+</div></div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-14 Tue 21:30</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-16 Thu 21:46</p></div>
 </div>
 </body>
 </html>
