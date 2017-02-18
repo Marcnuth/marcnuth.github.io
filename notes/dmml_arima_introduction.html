@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>从入门谈起，ARIMA如何应用到时间序列分析中？</title>
+<!-- 2017-02-19 Sun 00:06 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Marcnuth" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">从入门谈起，ARIMA如何应用到时间序列分析中？</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 基础概念</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 时间序列的平稳性</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1. 定义</a></li>
+<li><a href="#sec-1-1-2">1.1.2. 平稳性检验</a></li>
+<li><a href="#sec-1-1-3">1.1.3. 如何让时间序列变平稳</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">1.2. 随机游走</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1. 定义</a></li>
+<li><a href="#sec-1-2-2">1.2.2. 不平稳性的证明</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-2">2. <span class="todo TODO">TODO</span> ARIMA 模型</a></li>
+</ul>
+</div>
+</div>
+<p>
+<i>本文由作者原创，未经允许禁止转载。联系marcnuth(AT)foxmail.com了解转载事宜。</i>
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 基础概念</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 时间序列的平稳性</h3>
+<div class="outline-text-3" id="text-1-1">
+</div><div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> 定义</h4>
+<div class="outline-text-4" id="text-1-1-1">
+<p>
+<b>平稳性</b> 在时间序列分析中是一个贯穿始终的概念，用不平稳的时间序列建模，可能会出现伪回归的现象。
+怎么判断一个时间序列是否是平稳的？平稳性的定义如下:
+</p>
+<ul class="org-ul">
+<li>时间序列的均值是与t无关的常数
+</li>
+<li>时间数列的方差是与t无关的常数
+</li>
+<li>时间序列协方差仅与时间差有关
+</li>
+</ul>
+
+<p>
+以下的图给出了一些不平稳的时间序列:
+</p>
+
+
+<div class="figure">
+<p><img src="imgs/dmml_arima_unstationary_series.png" alt="dmml_arima_unstationary_series.png" />
+</p>
+</div>
+
+<p>
+另外，需要了解的是，白噪声是平稳的时间序列。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> 平稳性检验</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+<b><span class="underline">DF检验/单位根检验:</span></b>
+</p>
+
+<p>
+在DF检验中，假设时间序列模型为:
+$$Y_t = \rho Y_{t-1} + \mu_t$$
+其中 \(\mu_t\) 为白噪声，做差分，可得:
+$$\Delta Y_t= (\rho - 1)Y_{t-1} + \mu_t = \delta Y_{t-1} + \mu_t, 其中 \Delta Y_t = Y_t - Y_{t-1}$$
+</p>
+
+<p>
+因此可以看到，若\(\rho = 1 或 \delta = 0\)，则序列\(\Delta Y_t\) 是平稳的，我们称其为一阶平整过程，记做 \(I(1)\) 。
+相应的，无需一阶差分即为平稳的序列记做 \(I(0)\) 。
+</p>
+
+<p>
+更一般的，我们可以在上述模型上添加一个常数项，即：
+$$\Delta Y_t = \delta Y_{t-1} + \mu_t + \beta_1$$
+即为一个更一般的序列模型。
+</p>
+
+<p>
+DF检验本质上就是基于上一模型对参数 &rho;=1 或 &delta;=0 的假设检验。
+</p>
+
+<p>
+<b><span class="underline">ADF检验:</span></b>
+</p>
+
+<p>
+扩展DF检验中的序列模型，再差分项上增加一个趋势项，得到的序列模型如下:
+$$\Delta Y_t = \delta Y_{t-1} + \mu_t + \beta_1 + \beta_2 t$$
+其中, \(\beta_2\)是常数，t 是时间也称为趋势变量。如果误差项是自相关的，则模型等同于:
+$$\Delta Y_t = \delta Y_{t-1} + \alpha_i \sum_{i=1}^m \Delta Y_{t-i} + \beta_1 + \beta_2 t$$
+即为ADF检验的序列模型。
+</p>
+
+<p>
+在python中可以使用statsmodels的adfuller来进行ADF检验。<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup> 
+下面为一个简单的ADF检验的Python代码:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-python">import statsmodels.api as sm
+import numpy as np
+
+print('=&gt; test random data:')
+print(sm.tsa.stattools.adfuller(np.random.randn(100)))
+print('=&gt; test sin:')
+print(sm.tsa.stattools.adfuller(np.sin(range(100))))
+print('=&gt; test line:')
+print(sm.tsa.stattools.adfuller(range(100)))
+</pre>
+</div>
+
+<pre class="example">
+=&gt; test random data:
+(-10.712656694493257, 3.3014529411891085e-19, 0, 99, {'5%': -2.8912082118604681, '10%': -2.5825959973472097, '1%': -3.4981980821890981}, 257.03053017257179)
+=&gt; test sin:
+(-20050428159241372.0, 0.0, 3, 96, {'5%': -2.8921519665075235, '10%': -2.5830997960069446, '1%': -3.5003788874873405}, -6145.6382792775457)
+=&gt; test line:
+(1.8671227576372333, 0.99847325083384997, 9, 90, {'5%': -2.894232085048011, '10%': -2.5842101234567902, '1%': -3.5051901961591221}, -6469.5381959604356)
+</pre>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> 如何让时间序列变平稳</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+通常情况下，现实生活中的时间序列都是不平稳的。然而很多常用的时间序列分析算法都要求时间序列具备平稳性，为了应用这些算法，我们不得不将不平稳的时间序列变得平稳。
+在思考如何解决这一问题之前，我们需要知道，究竟是什么使得时间序列不平稳呢？
+我们知道，在做时间序列分析的时候，任意一条时间序列数据都会被拆分成三个部分，它们分别是：
+</p>
+<ul class="org-ul">
+<li>白噪声
+</li>
+<li>趋势
+</li>
+<li>季节性
+</li>
+</ul>
+
+<p>
+显然白噪声不会影响序列的平稳性。因此， <b>影响序列平稳性的因素是趋势和季节性</b> 。
+</p>
+
+<p>
+<b>如何去除序列中的趋势</b>
+</p>
+
+<p>
+假设一个时间序列:
+$$X_t = \epsilon_t + trend_t$$
+</p>
+
+<p>
+要使得该时间序列平稳，即把 \(trend_t\) 从 \(X_t\) 中减掉即可。 因此问题变成如何寻找得到时间序列中的趋势？
+通常有如下一些办法：
+</p>
+<ul class="org-ul">
+<li>MA：移动平均。 即认为 \(trend_t = \frac{\sum_{i=t-k}^t X_i}{k}\)
+</li>
+<li>聚合： 可以将数据按一段时间（一个月/一年）聚合，从而得到趋势
+</li>
+<li>多项式拟合: 拟合一个多项式方程，认为其即为时间序列的趋势
+</li>
+</ul>
+
+<p>
+在这些办法中，MA是最常用的一种办法。
+</p>
+
+<p>
+<b>如何去除序列中的季节性</b>
+去除季节性的办法通常有：
+</p>
+<ul class="org-ul">
+<li>差分： 选取一个时间差k，对原序列做k阶差分
+</li>
+<li>分解： 将序列的趋势和季节性都分解出来
+</li>
+</ul>
+
+<p>
+差分是最常用的办法。 而关于分解的内容可以参考statsmodels中的季节性分解。<sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup>
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 随机游走</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> 定义</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+随机游走序列的模型定义如下:
+$$X_t= X_{t-1} + \epsilon_t$$
+其中 \(\epsilon_t\) 表示t时刻的误差。 从上面模型可以看到，随机游走是这样一个序列，下一刻的值仅跟上一刻的取值相关。
+</p>
+
+<p>
+是不是觉得这个等式相当眼熟？是的，这就是上一节中我们谈到一阶平稳过程的时候，给出的等式。所以请记住，随机游走序列的特点是：
+</p>
+<ul class="org-ul">
+<li>当前时刻取值仅跟上一刻相关
+</li>
+<li>是一阶平稳过程\(I(1)\)，即是 <b>不平稳</b> 序列
+</li>
+</ul>
+
+<p>
+为了再次巩固 <b>平稳性</b> 的概念，我们来证明一下随机游走序列的不平稳性。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> 不平稳性的证明</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+<b>1. 均值是否随时间变化?</b>
+</p>
+
+<p>
+将随机游走序列模型展开，有：
+$$X_t= X_{t-1} + \epsilon_t = X_0 + \sum_{i=0}^t \epsilon_i$$
+</p>
+
+<p>
+因此，均值为:
+$$E(X_t) = E(X_0) + \sum_{i=0}^t E(\epsilon_i)$$
+</p>
+
+<p>
+因为 \(\epsilon_i\) 为随机误差，因此其方差为0, 所以随机游走的方差即为 \(E(X_0)\)， 即为常数。 所以随机游走序列的均值是 <b>不随时间变化的</b> 。
+</p>
+
+<p>
+<b>2. 方差是否随时间变化？</b>
+</p>
+
+<p>
+随机游走的方差为：
+$$Var(X_t) = Var(X_0) + \sum_{i=0}^t Var(\epsilon_i) = 0 + t * \delta$$
+</p>
+
+<p>
+由于 \(\delta\) 是随机噪声的方差，为常数，因此随机游走序列的 <b>方差是随时间变化的</b> 。
+</p>
+
+
+<p>
+<b>3. 协方差是否随时间变化？</b>
+</p>
+
+<p>
+通过上面2项，我们已经得知随机游走不是平稳序列了。所以这里就留给你证明吧。 提醒一下：
+</p>
+
+<p>
+$$Cov(X_t, X_{t-k}) = E(X_t - E(X_t)) E(X_{t-k} - E(X_{t-k}))$$
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> <span class="todo TODO">TODO</span> ARIMA 模型</h2>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+<a href="http://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.adfuller.html#statsmodels.tsa.stattools.adfuller">Statsmodels: ADF Test in Python</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p class="footpara">
+<a href="http://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html#statsmodels.tsa.seasonal.seasonal_decompose">Statsmodels: Seasonal Decomposing</a>
+</p></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-19 Sun 00:06</p></div>
+</div>
+</body>
+</html>
