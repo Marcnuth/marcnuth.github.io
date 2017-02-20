@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>从入门谈起，ARIMA如何应用到时间序列分析中？</title>
-<!-- 2017-02-20 Mon 17:03 -->
+<!-- 2017-02-20 Mon 22:40 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -213,8 +213,17 @@ for the JavaScript code in this tag.
 <ul>
 <li><a href="#sec-2-1-1">2.1.1. AR模型</a></li>
 <li><a href="#sec-2-1-2">2.1.2. MA模型</a></li>
+<li><a href="#sec-2-1-3">2.1.3. 差分项</a></li>
 </ul>
 </li>
+<li><a href="#sec-2-2">2.2. ARIMA模型调参指南</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. d: 差分阶数选取</a></li>
+<li><a href="#sec-2-2-2">2.2.2. <span class="todo TODO">TODO</span> p: AR模型参数的选取</a></li>
+<li><a href="#sec-2-2-3">2.2.3. <span class="todo TODO">TODO</span> q: MA模型参数的选取</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. <span class="todo TODO">TODO</span> ARIMA模型的使用</a></li>
 </ul>
 </li>
 </ul>
@@ -324,11 +333,11 @@ print(sm.tsa.stattools.adfuller(range(100)))
 
 <pre class="example">
 =&gt; test random data:
-(-9.6188087597184531, 1.7311885618978275e-16, 0, 99, {'1%': -3.4981980821890981, '10%': -2.5825959973472097, '5%': -2.8912082118604681}, 230.52342472591789)
+(-10.408686104886385, 1.8281154932826368e-18, 0, 99, {'10%': -2.5825959973472097, '5%': -2.8912082118604681, '1%': -3.4981980821890981}, 256.35547904121796)
 =&gt; test sin:
-(-20050428159241372.0, 0.0, 3, 96, {'1%': -3.5003788874873405, '10%': -2.5830997960069446, '5%': -2.8921519665075235}, -6145.6382792775457)
+(-20050428159241372.0, 0.0, 3, 96, {'10%': -2.5830997960069446, '5%': -2.8921519665075235, '1%': -3.5003788874873405}, -6145.6382792775457)
 =&gt; test line:
-(1.8671227576372333, 0.99847325083384997, 9, 90, {'1%': -3.5051901961591221, '10%': -2.5842101234567902, '5%': -2.894232085048011}, -6469.5381959604356)
+(1.8671227576372333, 0.99847325083384997, 9, 90, {'10%': -2.5842101234567902, '5%': -2.894232085048011, '1%': -3.5051901961591221}, -6469.5381959604356)
 </pre>
 </div>
 </div>
@@ -508,7 +517,7 @@ ARIMA(Auto-Regressive Integrated Moving Averages)，称为自回归积分移动�
 <div class="outline-text-4" id="text-2-1-1">
 <p>
 AR模型是自回归模型，其核心思想即当前值依赖于之前的值。其序列模型如下：
-$$X_t = \alpha * X_{t-1} + \epsilon_t$$
+$$AR(p): X_t = \sum_{i=1}^p \alpha_i * X_{t-i} + \epsilon_t$$
 </p>
 
 <p>
@@ -517,7 +526,7 @@ $$X_t = \alpha * X_{t-1} + \epsilon_t$$
 </p>
 
 <p>
-下面生成了一个\(\alpha = 0.5\)的AR(1)模型：
+下面生成了一个\(p = 1 且 \alpha = 0.5\) 的 AR(1) 模型：
 </p>
 
 
@@ -535,14 +544,81 @@ $$X_t = \alpha * X_{t-1} + \epsilon_t$$
 <div class="outline-text-4" id="text-2-1-2">
 <p>
 MA模型是移动平均模型，其模型和AR模型类似，不过MA强调的是，当前项可以基于过去的 <b>误差项</b> 求得，即:
-$$X_t = \beta \epsilon_{t-1} + \epsilon_t$$
+$$MA(q): X_t = \sum_{i=0}^q \beta_i \epsilon_{t-i} $$
 </p>
 
 <p>
 值得注意的是，与AR不同， <b>MA模型总是平稳的</b> 。<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup>
 </p>
+
+<p>
+下图是 \(\beta=0.5\) 的MA模型:
+</p>
+
+
+<div class="figure">
+<p><img src="imgs/dmml_arima_ma_model_1.png" alt="dmml_arima_ma_model_1.png" />
+</p>
+</div>
+
+<p>
+对比AR和MA的两个图，你将发现，在MA模型中，值下降的很快，也就是说，随着时间的迁移，受噪声的影响迅速减小。
+</p>
 </div>
 </div>
+
+<div id="outline-container-sec-2-1-3" class="outline-4">
+<h4 id="sec-2-1-3"><span class="section-number-4">2.1.3</span> 差分项</h4>
+<div class="outline-text-4" id="text-2-1-3">
+<p>
+前面提到， AR模型和MA模型应用前，都要求时间序列是平稳的。所以理所当然的，组合AR和MA之后的模型： ARMA模型也要求时间序列是平稳的，换句话说， <b>ARMA是对平稳时间序列进行建模的办法。</b>
+</p>
+
+<p>
+然而现实中大多时间序列是不平稳的，而之前我们也提到过，将不平稳时间序列变化为平稳时间序列的最常用的办法就是差分，而集合了差分项的ARMA模型即是我们谈到的ARIMA模型。
+因此， <b>ARIMA是对不平稳时间序列进行建模的办法。</b>
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> ARIMA模型调参指南</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+ARIMA(p, d, q) 的参数为p、q和d。其中p为AR模型的参数，q为MA模型的参数，d为差分的阶数。
+</p>
+</div>
+
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> d: 差分阶数选取</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+正如前面所言，进行差分的目的是希望把序列变得平稳。因此，可选取不同d值进行ADF检验，若平稳了，即可选取对应d值。 通常情况下，d取值为0/1/2。
+</p>
+
+
+<p>
+有些情况下，可能试验了多个d的取值后仍旧不能把序列变得平稳。这种时候，可以先试一下用其他办法，比如先对时间序列取log之后再进行差分阶数的选取。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> <span class="todo TODO">TODO</span> p: AR模型参数的选取</h4>
+<div class="outline-text-4" id="text-2-2-2">
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> <span class="todo TODO">TODO</span> q: MA模型参数的选取</h4>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> <span class="todo TODO">TODO</span> ARIMA模型的使用</h3>
 </div>
 </div>
 <div id="footnotes">
@@ -565,7 +641,7 @@ $$X_t = \beta \epsilon_{t-1} + \epsilon_t$$
 </div>
 </div></div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-20 Mon 17:02</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-20 Mon 22:39</p></div>
 </div>
 </body>
 </html>
