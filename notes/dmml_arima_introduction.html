@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>从入门谈起，ARIMA如何应用到时间序列分析中？</title>
-<!-- 2017-02-22 Wed 10:23 -->
+<!-- 2017-02-23 Thu 23:04 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -221,8 +221,8 @@ for the JavaScript code in this tag.
 <li><a href="#sec-2-2">2.2. ARIMA模型调参指南</a>
 <ul>
 <li><a href="#sec-2-2-1">2.2.1. d: 差分阶数选取</a></li>
-<li><a href="#sec-2-2-2">2.2.2. <span class="todo TODO">TODO</span> p: AR模型参数的选取</a></li>
-<li><a href="#sec-2-2-3">2.2.3. <span class="todo TODO">TODO</span> q: MA模型参数的选取</a></li>
+<li><a href="#sec-2-2-2">2.2.2. p: AR模型参数的选取</a></li>
+<li><a href="#sec-2-2-3">2.2.3. q: MA模型参数的选取</a></li>
 </ul>
 </li>
 <li><a href="#sec-2-3">2.3. <span class="todo TODO">TODO</span> ARIMA模型的使用</a></li>
@@ -335,11 +335,11 @@ print(sm.tsa.stattools.adfuller(range(100)))
 
 <pre class="example">
 =&gt; test random data:
-(-10.08344390915609, 1.1721047051389801e-17, 0, 99, {'10%': -2.5825959973472097, '1%': -3.4981980821890981, '5%': -2.8912082118604681}, 252.42755861027504)
+(-5.1114088026398177, 1.3297067700264452e-05, 5, 94, {'1%': -3.5019123847798657, '10%': -2.5834538614757809, '5%': -2.8928152554828892}, 256.28300575862283)
 =&gt; test sin:
-(-20050428159241372.0, 0.0, 3, 96, {'10%': -2.5830997960069446, '1%': -3.5003788874873405, '5%': -2.8921519665075235}, -6145.6382792775457)
+(-20050428159241372.0, 0.0, 3, 96, {'1%': -3.5003788874873405, '10%': -2.5830997960069446, '5%': -2.8921519665075235}, -6145.6382792775457)
 =&gt; test line:
-(1.8671227576372333, 0.99847325083384997, 9, 90, {'10%': -2.5842101234567902, '1%': -3.5051901961591221, '5%': -2.894232085048011}, -6469.5381959604356)
+(1.8671227576372333, 0.99847325083384997, 9, 90, {'1%': -3.5051901961591221, '10%': -2.5842101234567902, '5%': -2.894232085048011}, -6469.5381959604356)
 </pre>
 </div>
 </div>
@@ -504,16 +504,43 @@ ACF(auto correlation function): 即自相关方程。
 
 <p>
 ACF的定义为:
-$$ACF(k) = \frac{E[(X_t - \mu)(X_{t+k} - \mu})]/\sigma^2$$
+$$ACF(k) = \frac{E[(X_t - \mu)(X_{t+k} - \mu)]}{\sigma^2} = \frac{E[(X_t - \mu)(X_{t+k} - \mu)]}{\sqrt{E(X_t - \mu)^2} \sqrt{E(X_{t+k} - \mu)^2}}$$
+</p>
+
+<p>
+ACF函数的值域为[-1, 1]， 当值为0时，表示不相关，1表示正相关，-1表示负相关。另外，ACF函数是关于k=0对称的，即 ACF(k) = ACF(-k)。
+</p>
+
+<p>
+假定序列X <b>平稳</b> ，我们可以定义样本自相关函数为：
+$$ACF(k) = \frac{\sum_{t=k+1}^n (X_t - \bar{X})(X_{t-k} - \bar{X})}{\sum_{t=1}^n (X_t - \bar{X})^2}$$
+</p>
+
+<p>
+根据该样本自相关函数定义得到的图形即是常用的ACF相关图。
 </p>
 </div>
 </div>
 
-
 <div id="outline-container-sec-1-4" class="outline-3">
 <h3 id="sec-1-4"><span class="section-number-3">1.4</span> PACF</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+PACF(Partial autocorrelation function)： 即偏自相关函数。
+</p>
+
+<p>
+引入PACF的原因是因为ACF虽然给出了K阶滞后项的相关性，但是这个相关性没有消除中间变量如\(X_{t+1} ... X_{t+K-1}\)的影响。<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup>
+</p>
+
+<p>
+因此，PACF的定义可以看作:
+$$PACF(k) = Corr(X_t - \beta1 X_{t-1} - ... - \beta_{k-1} Y_{t-k+1}, X_{t-k} - \beta_1 X_{t-k+1} - ... - \beta_{k-1} X_{t-1})$$
+</p>
 </div>
 </div>
+</div>
+
 
 
 <div id="outline-container-sec-2" class="outline-2">
@@ -571,7 +598,7 @@ $$MA(q): X_t = \sum_{i=0}^q \beta_i \epsilon_{t-i} $$
 </p>
 
 <p>
-值得注意的是，与AR不同， <b>MA模型总是平稳的</b> 。<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup>
+值得注意的是，与AR不同， <b>MA模型总是平稳的</b> 。<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup>
 </p>
 
 <p>
@@ -618,7 +645,7 @@ ARIMA(p, d, q) 的参数为p、q和d。其中p为AR模型的参数，q为MA模�
 <h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> d: 差分阶数选取</h4>
 <div class="outline-text-4" id="text-2-2-1">
 <p>
-差分阶数的选取可以遵循一下规则<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup>:
+差分阶数的选取可以遵循一下规则<sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup>:
 </p>
 <ol class="org-ol">
 <li>如果该序列的ACF图没有衰减并逼近0, 那么该序列需要再做差分。
@@ -643,16 +670,23 @@ ARIMA(p, d, q) 的参数为p、q和d。其中p为AR模型的参数，q为MA模�
 
 
 <div id="outline-container-sec-2-2-2" class="outline-4">
-<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> <span class="todo TODO">TODO</span> p: AR模型参数的选取</h4>
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> p: AR模型参数的选取</h4>
 <div class="outline-text-4" id="text-2-2-2">
+<p>
+对于 AR(p) 模型， 理想情况下， k &gt; p 时， PACF=0, 即 <b>PACF在p项后截断</b> ， 因此可根据PACF函数的截断项来确定一个初始的p值。
+</p>
 </div>
 </div>
 
 <div id="outline-container-sec-2-2-3" class="outline-4">
-<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> <span class="todo TODO">TODO</span> q: MA模型参数的选取</h4>
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> q: MA模型参数的选取</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+在 MA(q) 模型中，对于其序列的ACF图，可以发现，理想情况下当k&gt;q时，ACF = 0， <b>即ACF在q项后截断。 因此，可根据ACF函数的截断项来确定一个初始的q值。</b>
+</p>
 </div>
 </div>
-
+</div>
 
 <div id="outline-container-sec-2-3" class="outline-3">
 <h3 id="sec-2-3"><span class="section-number-3">2.3</span> <span class="todo TODO">TODO</span> ARIMA模型的使用</h3>
@@ -671,10 +705,14 @@ ARIMA(p, d, q) 的参数为p、q和d。其中p为AR模型的参数，q为MA模�
 </p></div>
 
 <div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p class="footpara">
-<a href="https://en.wikipedia.org/wiki/Moving-average_model">WIKI: MA model</a>
+《时间序列分析：R 语言》第6章 6.2 偏自相关函数和扩展的自相关函数
 </p></div>
 
 <div class="footdef"><sup><a id="fn.4" name="fn.4" class="footnum" href="#fnr.4">4</a></sup> <p class="footpara">
+<a href="https://en.wikipedia.org/wiki/Moving-average_model">WIKI: MA model</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.5" name="fn.5" class="footnum" href="#fnr.5">5</a></sup> <p class="footpara">
 <a href="http://people.duke.edu/~rnau/411arim2.htm">Identifying the order of differencing in an ARIMA model</a>
 </p></div>
 
@@ -682,7 +720,7 @@ ARIMA(p, d, q) 的参数为p、q和d。其中p为AR模型的参数，q为MA模�
 </div>
 </div></div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-22 Wed 09:59</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-23 Thu 23:04</p></div>
 </div>
 </body>
 </html>
