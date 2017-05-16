@@ -17,8 +17,7 @@
 
      $.getJSON( "notes/oth/index.json", function(data) {
 	 var items = [];
-	 console.log(data);
-	 $.each(data, function(ele) {
+	 $.each(data, function(id, ele) {
 	     console.log(ele);
 	     items.push("<li><a href='pages/" + ele['file'] + ".html'><strong>" + ele['title'] + "</strong></a></li>");
 	 });
