@@ -5,17 +5,32 @@
     <title>Marcnuth's blog</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- redirect to notes -->
-    <script language="javascript">
 
-	window.location.href = "http://marcnuth.github.io/notes/index.html";
-
-    </script>
 
 
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <script src="notes/oth/jquery-3.2.1.min.js"></script>
+    <script language="javascript">
+
+     $.getJSON( "notes/oth/index.json", function(data) {
+	 var items = [];
+	 console.log(data);
+	 $.each(data, function( key, val ) {
+	     items.push( "<li id='" + key + "'>" + val + "</li>" );
+	 });
+	 
+	 $( "<ul/>", {
+	     "class": "my-new-list",
+	     html: items.join( "" )
+	 }).appendTo( "body" );
+     });
+     //window.location.href = "http://marcnuth.github.io/notes/index.html";
+
+    </script>
+    
   </head>
   <body>
     <section class="page-header">
