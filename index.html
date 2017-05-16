@@ -18,14 +18,12 @@
      $.getJSON( "notes/oth/index.json", function(data) {
 	 var items = [];
 	 console.log(data);
-	 $.each(data, function( key, val ) {
-	     items.push( "<li id='" + key + "'>" + val + "</li>" );
+	 $.each(data, function(ele) {
+	     items.push("<li><a href='pages/" + ele['file'] + ".html'><strong>" + ele['title'] + "</strong></a></li>");
 	 });
+
+	 $(".notes_list").html(items.join(""));
 	 
-	 $( "<ul/>", {
-	     "class": "my-new-list",
-	     html: items.join( "" )
-	 }).appendTo( "body" );
      });
      //window.location.href = "http://marcnuth.github.io/notes/index.html";
 
@@ -41,7 +39,7 @@
     <section class="main-content">
       <h3>文章列表</h3>
 
-      <ul>
+      <ul class="notes_list">
 	  <li><a href="pages/java8.html"><strong>Java tips/tricks & FAQ</strong></a></li>
 	  <li><a href="pages/python.html"><strong>Python tips/tricks & FAQ</strong></a></li>
       </ul>
