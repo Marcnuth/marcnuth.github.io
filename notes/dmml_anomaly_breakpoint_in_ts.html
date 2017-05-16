@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>异常检测和断点检测在时间序列中的应用</title>
-<!-- 2017-05-16 Tue 22:10 -->
+<!-- 2017-05-16 Tue 23:47 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -221,7 +221,9 @@ for the JavaScript code in this tag.
 </li>
 <li><a href="#sec-2-3">2.3. Generalized ESD(extreme Studentized deviate) Test </a>
 <ul>
-<li><a href="#sec-2-3-1">2.3.1. 目的</a></li>
+<li><a href="#sec-2-3-1">2.3.1. 概述</a></li>
+<li><a href="#sec-2-3-2">2.3.2. 原理</a></li>
+<li><a href="#sec-2-3-3">2.3.3. 示例</a></li>
 </ul>
 </li>
 <li><a href="#sec-2-4">2.4. Seasonal Hybrid ESD (S-H-ESD)</a></li>
@@ -493,17 +495,141 @@ Thus, the test is always a lower, one-tailed test regardless of which test stati
 <h3 id="sec-2-3"><span class="section-number-3">2.3</span> Generalized ESD(extreme Studentized deviate) Test <sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup></h3>
 <div class="outline-text-3" id="text-2-3">
 </div><div id="outline-container-sec-2-3-1" class="outline-4">
-<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 目的</h4>
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 概述</h4>
 <div class="outline-text-4" id="text-2-3-1">
 <p>
-The generalized (extreme Studentized deviate) ESD test (Rosner 1983) is used to detect 
-one or more outliers in a univariate data set that follows an approximately normal distribution.
+ESD被用来判断近似正态分布中的异常值/离群点。
+Grubbs Test只能检测一个异常值， 而Tietjen-Moore Test需给定异常值的个数k，并且如果k设置不合理，可能很难获得正确结果。
+但是， ESD则不同。只需设置异常值最多有多少个，ESD就能找出那些可能的异常值。因此，可以说ESD比之前的办法更通用。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2"><span class="section-number-4">2.3.2</span> 原理</h4>
+<div class="outline-text-4" id="text-2-3-2">
+<p>
+Given the upper bound, r, the generalized ESD test essentially performs r separate tests: a test for one outlier, a test for two outliers, and so on up to r outliers.
+The generalized ESD test is defined for the hypothesis:
+H0:        There are no outliers in the data set
+Ha:        There are up to r outliers in the data set
+Test Statistic:        Compute
 </p>
 
 <p>
-The primary limitation of the Grubbs test and the Tietjen-Moore test is that the suspected number of outliers, 
-k, must be specified exactly. If k is not specified correctly, this can distort the conclusions of these tests. 
-On the other hand, the generalized ESD test (Rosner 1983) only requires that an upper bound for the suspected number of outliers be specified.
+$$ R_i = \frac{\mbox{max}_i |x_i - \bar{x}|}{s} $$
+</p>
+
+<p>
+with x¯ and s denoting the sample mean and sample standard deviation, respectively.
+</p>
+
+<p>
+Remove the observation that maximizes |xi−x¯| and then recompute the above statistic with n - 1 observations. 
+Repeat this process until r observations have been removed. This results in the r test statistics R1, R2, &#x2026;, Rr.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-3-3" class="outline-4">
+<h4 id="sec-2-3-3"><span class="section-number-4">2.3.3</span> 示例</h4>
+<div class="outline-text-4" id="text-2-3-3">
+<p>
+R commands and output:
+</p>
+
+<p>
+## Input data.
+y = c(-0.25, 0.68, 0.94, 1.15, 1.20, 1.26, 1.26,
+       1.34, 1.38, 1.43, 1.49, 1.49, 1.55, 1.56,
+       1.58, 1.65, 1.69, 1.70, 1.76, 1.77, 1.81,
+       1.91, 1.94, 1.96, 1.99, 2.06, 2.09, 2.10,
+       2.14, 2.15, 2.23, 2.24, 2.26, 2.35, 2.37,
+       2.40, 2.47, 2.54, 2.62, 2.64, 2.90, 2.92,
+       2.92, 2.93, 3.21, 3.26, 3.30, 3.59, 3.68,
+       4.30, 4.64, 5.34, 5.42, 6.01)
+</p>
+
+<p>
+## Generate normal probability plot.
+qqnorm(y)
+</p>
+
+<p>
+## Create function to compute the test statistic.
+rval = function(y){
+       ares = abs(y - mean(y))/sd(y)
+       df = data.frame(y, ares)
+       r = max(df$ares)
+       list(r, df)}
+</p>
+
+<p>
+## Define values and vectors.
+n = length(y)
+alpha = 0.05
+lam = c(1:10)
+R = c(1:10)
+</p>
+
+<p>
+## Compute test statistic until r=10 values have been
+## removed from the sample.
+for (i in 1:10){
+</p>
+
+<p>
+if(i==1){
+rt = rval(y)
+R[i] = unlist(rt<sup><a id="fnr.1.100" name="fnr.1.100" class="footref" href="#fn.1">1</a></sup>)
+df = data.frame(rt<sup><a id="fnr.2.100" name="fnr.2.100" class="footref" href="#fn.2">2</a></sup>)
+newdf = df[df$ares!=max(df$ares),]}
+</p>
+
+<p>
+else if(i!=1){
+rt = rval(newdf$y)
+R[i] = unlist(rt<sup><a id="fnr.1.100" name="fnr.1.100" class="footref" href="#fn.1">1</a></sup>)
+df = data.frame(rt<sup><a id="fnr.2.100" name="fnr.2.100" class="footref" href="#fn.2">2</a></sup>)
+newdf = df[df$ares!=max(df$ares),]}
+</p>
+
+<p>
+## Compute critical value.
+p = 1 - alpha/(2*(n-i+1))
+t = qt(p,(n-i-1))
+lam[i] = t*(n-i) / sqrt((n-i-1+t**2)*(n-i+1))
+</p>
+
+<p>
+}
+## Print results.
+newdf = data.frame(c(1:10),R,lam)
+names(newdf)=c("No. Outliers","Test Stat.", "Critical Val.")
+newdf
+</p>
+
+<p>
+##&gt;    No. Outliers Test Stat. Critical Val.
+##&gt; 1             1   3.118906      3.158794
+##&gt; 2             2   2.942973      3.151430
+##&gt; 3             3   3.179424      3.143890
+##&gt; 4             4   2.810181      3.136165
+##&gt; 5             5   2.815580      3.128247
+##&gt; 6             6   2.848172      3.120128
+##&gt; 7             7   2.279327      3.111796
+##&gt; 8             8   2.310366      3.103243
+##&gt; 9             9   2.101581      3.094456
+##&gt; 10           10   2.067178      3.085425
+</p>
+
+
+
+<p>
+######################################################################
+## <code>==============================================================</code> ##
+######################################################################
 </p>
 </div>
 </div>
@@ -541,7 +667,7 @@ On the other hand, the generalized ESD test (Rosner 1983) only requires that an 
 </div>
 </div></div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-16 Tue 22:05</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-16 Tue 22:58</p></div>
 </div>
 </body>
 </html>
