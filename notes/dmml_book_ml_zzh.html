@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>《机器学习》学习笔记</title>
+<!-- 2017-05-16 Tue 14:49 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Marcnuth" />
+<meta  name="keywords" content="机器学习 周志华" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">《机器学习》学习笔记</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 第三章 线性模型</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 常用模型</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1. 线性回归</a></li>
+<li><a href="#sec-1-1-2">1.1.2. 逻辑回归</a></li>
+<li><a href="#sec-1-1-3">1.1.3. 线性判别分析</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-2">1.2. 记忆点</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. 第四章 决策树</a>
+<ul>
+<li><a href="#sec-2-1">2.1. 原理</a></li>
+<li><a href="#sec-2-2">2.2. 分裂节点的选取办法</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. 信息增益</a></li>
+<li><a href="#sec-2-2-2">2.2.2. 增益率</a></li>
+<li><a href="#sec-2-2-3">2.2.3. 基尼系数</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. 防止决策树过拟合的办法</a>
+<ul>
+<li><a href="#sec-2-3-1">2.3.1. 预剪枝</a></li>
+<li><a href="#sec-2-3-2">2.3.2. 后剪枝</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 第三章 线性模型</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 常用模型</h3>
+<div class="outline-text-3" id="text-1-1">
+</div><div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> 线性回归</h4>
+<div class="outline-text-4" id="text-1-1-1">
+</div><ol class="org-ol"><li><a id="sec-1-1-1-1" name="sec-1-1-1-1"></a>概念<br  /><div class="outline-text-5" id="text-1-1-1-1">
+<p>
+线性回归通过拟合一个线性方程($ Y = WX + b $)，求解最小化均方误差，得到各个参数，形成模型。
+一元线性回归是指给定的特征数量只有一个，而包含多个特征的线性回归方程被称为多元线性回归。
+通过最小二乘法，我们可以得到特征权重W的表达式，这个W可能有多个解（尤其是当特征数&gt;实例数时，数学上可证），选择哪个解取决于模型的偏好，有时候，我们可以通过正则化来判断选择。
+</p>
+</div>
+</li>
+
+<li><a id="sec-1-1-1-2" name="sec-1-1-1-2"></a>变种<br  /><div class="outline-text-5" id="text-1-1-1-2">
+<ul class="org-ul">
+<li>对数线性回归： 将线性方程微调为 $ lnY = WX + b $
+</li>
+<li>广义线性回归方程： $Y = g<sup>-1</sup> (WX + b)$， 通过微调方程g，可以得到不同的模型
+</li>
+</ul>
+</div>
+</li></ol>
+</div>
+
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> 逻辑回归</h4>
+<div class="outline-text-4" id="text-1-1-2">
+</div><ol class="org-ol"><li><a id="sec-1-1-2-1" name="sec-1-1-2-1"></a>概念<br  /><div class="outline-text-5" id="text-1-1-2-1">
+<p>
+有了线性回归方程，线性分类也就呼之欲出了。线性分类的目的最终输出多种类别，注意前面我们提到的广义线性回归方程。如果我们找到一个函数g，其能将 \(WX + b\) 的结果和真实的Y对应起来，不就得到了分类模型了吗？
+记 $Z= WX + b, Y = g<sup>-1</sup> Z$，
+一般情况下，Z到Y的映射可以表示为: $Y = 0 Z &lt; 0,  0.5 Z=0, 1 Z &gt; 0$， 即单位阶跃函数。解释为当Z大于0时认为是正例，小于0时为负例，等于时任意判别。
+但是因为单位阶跃函数不可导，因此我们选择了一个近似的函数来代替它，即sigmoid函数: $Y = 1 / (1 + e<sup>-Z</sup>)$。
+此时，虽然Y取值范围仍是[0,1]， 但是Y的值是连续的，不是类别。看起来似乎走错路了，其实并没有，我们可以将Y的值解释为预测为类别1的概率，Z越大，Y越接近于1,即概率越大，反之越小。
+利用sigmoid函数得到的分类模型被称为逻辑回归模型，也成为对数几率模型。
+</p>
+</div>
+</li></ol>
+</div>
+
+
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> 线性判别分析</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<p>
+线性判别分析即LDA，又称为Fisher线性判别。其思想主要为：将所有样例的投影映射到一条直线上，则理想情况下，同类别的点会集聚在一个有限范围内。拿到预测实例后，根据其投影所属的区间判断其类别。
+那么如何求解投影到的直线方程呢？
+期望分类效果越好，则样例的投影应该彼此越可能近的聚集。换成数学语言，即使同类投影点的协方差尽可能小，异类尽可能大，从而求解模型。
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 记忆点</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>均方误差： $&sum;{i=1}{m} (Y - \bar(Y))<sup>2</sup> $， 均方误差与欧式距离相对应
+</li>
+<li>基于均方误差最小化求解模型的方法即为最小二乘法(least square method)
+</li>
+<li>均方误差中的因变量为W和b，求解均方误差最小化，即对该表达式求导，使得其对W和b的倒数均为0。
+</li>
+<li>多分类问题可以简化为二分类问题
+</li>
+<li>分类时，注意不平衡数据的情况
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 第四章 决策树</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 原理</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+选取特征作为分裂节点，最终形成决策树，其中，叶子节点即为分类结果。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> 分裂节点的选取办法</h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 信息增益</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+<b>信息熵是衡量集合纯度的一种常用办法</b> ， 信息增益是指增加某个信息后信息熵的变化。因此，可以简单的认为，如果增加某个属性后，对于实例样本的信息增益越大，则该特征属性的价值越大，越能帮助我们分类。
+因此，使用信息增益是一种选取分裂节点的办法。常用的ID3算法即是使用信息增益来选取分裂节点。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 增益率</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+使用信息增益选取分裂节点时，会对 <b>可取值数目较多</b> 的属性。所以，基于信息增益，产生了一种采用信息增益和属性固有值的比率作为分裂标准的办法，称之为增益率。
+常用的C4.5算法即是基于增益率选取分裂节点的算法。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-3" class="outline-4">
+<h4 id="sec-2-2-3"><span class="section-number-4">2.2.3</span> 基尼系数</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+基尼系数反映了从给定集合中随机抽取2个样本，其类别不一样的概率。因此，基尼系数也可以用来衡量集合的纯度。
+常用的CART决策树即采用了GINI系数来进行分类节点的选择。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> 防止决策树过拟合的办法</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+完全的决策树可能会产生过拟合的问题，为了避免过拟合，通常可以使用剪枝的办法。
+</p>
+</div>
+
+<div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 预剪枝</h4>
+</div>
+
+<div id="outline-container-sec-2-3-2" class="outline-4">
+<h4 id="sec-2-3-2"><span class="section-number-4">2.3.2</span> 后剪枝</h4>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-01 Mon 10:15</p></div>
+</div>
+</body>
+</html>

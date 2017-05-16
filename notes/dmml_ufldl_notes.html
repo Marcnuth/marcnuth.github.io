@@ -3,11 +3,11 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Java Exceptions and Solutions</title>
+<title>dmml_ufldl_notes</title>
 <!-- 2017-04-27 Thu 17:21 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
-<meta  name="author" content="Marcnuth" />
+<meta  name="author" content="marc" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center; }
@@ -88,12 +88,6 @@
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
-<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -143,85 +137,28 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Java Exceptions and Solutions</h1>
-<div id="table-of-contents">
-<h2>Table of Contents</h2>
-<div id="text-table-of-contents">
-<ul>
-<li><a href="#sec-1">1. Exceptions Table</a></li>
-</ul>
-</div>
-</div>
+<h1 class="title">dmml_ufldl_notes</h1>
+<ol class="org-ol">
+<li>自编码神经网络(autoencoder)是什么
+</li>
+</ol>
 <p>
-<i>This article is forbidden to publish elsewhere without permission. Contact marcnuth(AT)foxmail.com for permission.</i>
+自编码神经网络 尝试使得 输出逼近输入！
+<a href="http://ufldl.stanford.edu/wiki/index.php/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7">http://ufldl.stanford.edu/wiki/index.php/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7</a>
 </p>
 
-
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> Exceptions Table</h2>
-<div class="outline-text-2" id="text-1">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="left">Exception</th>
-<th scope="col" class="left">Library</th>
-<th scope="col" class="left">Description</th>
-<th scope="col" class="left">Solution</th>
-<th scope="col" class="left">Extra</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="left">com.fasterxml.jackson.databind.JsonMappingException</td>
-<td class="left">jackson</td>
-<td class="left">No suitable constructor found for type</td>
-<td class="left">1. for inner class, please add static; 2. Check the default constructor exists or not</td>
-<td class="left">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="left">com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException</td>
-<td class="left">jackson</td>
-<td class="left">Unrecognized field "&#x2026;"</td>
-<td class="left">1. Add @JsonIgnoreProperties(ignoreUnknown=true) on the class</td>
-<td class="left">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="left">java.net.SocketException</td>
-<td class="left">java</td>
-<td class="left">Connection reset</td>
-<td class="left">1. Peer close socket when another is still reading, check if peer will close in advance</td>
-<td class="left"><a href="http://stackoverflow.com/questions/62929/java-net-socketexception-connection-reset">http://stackoverflow.com/questions/62929/java-net-socketexception-connection-reset</a></td>
-</tr>
-
-<tr>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<ol class="org-ol">
+<li>自编码神经网络有什么用？
+</li>
+</ol>
+<p>
+数据压缩：假设输入有100个属性，隐藏层有50个神经元，那么自编码神经网络可以从50个神经元中恢复原来的100个属性， 那么是否达到了压缩的目的？即我们发现了输入之间的某些联系，并能用更少的数据来表示这种结构。
+如果隐藏层的神经元更多呢？
+<a href="http://ufldl.stanford.edu/wiki/index.php/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7">http://ufldl.stanford.edu/wiki/index.php/%E8%87%AA%E7%BC%96%E7%A0%81%E7%AE%97%E6%B3%95%E4%B8%8E%E7%A8%80%E7%96%8F%E6%80%A7</a>
+</p>
 </div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-03-09 Thu 15:03</p></div>
+<div class="postamble"><p class="author">Author: marc</p><p class="email">Email: <a href="mailto:marc@marc-dev-mate">marc@marc-dev-mate</a></p><p class="date">Last Updated: 2017-04-27 Thu 14:41</p></div>
 </div>
 </body>
 </html>

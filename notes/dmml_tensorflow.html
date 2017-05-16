@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>TensorFlow 学习笔记</title>
+<!-- 2017-05-16 Tue 14:49 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Marcnuth" />
+<meta  name="keywords" content="TensorFlow 深度学习 神经网络" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">TensorFlow 学习笔记</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Get Started</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 基础概念</a></li>
+<li><a href="#sec-1-2">1.2. 笔记</a></li>
+<li><a href="#sec-1-3">1.3. 补充材料</a>
+<ul>
+<li><a href="#sec-1-3-1">1.3.1. 矩阵的秩及其求法</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-4">1.4. 文档链接</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Tutorials</a></li>
+<li><a href="#sec-3">3. 实例</a>
+<ul>
+<li><a href="#sec-3-1">3.1. 线性回归</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Get Started</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 基础概念</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>Tensor： 数据， 一个多维数组(n*1)
+</li>
+<li>Graph： 计算模型
+</li>
+<li>ops(operations): Graph中的节点，一个节点接受一个或多个Tensor
+</li>
+<li>Session: 执行Graph的上下文
+</li>
+<li>Varaible： 变量，可以用于维护状态或者数值等
+</li>
+<li>Feed/Fetch: 装载数据和获取数据
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 笔记</h3>
+<div class="outline-text-3" id="text-1-2">
+<ul class="org-ul">
+<li>在一个Session中，TensorFlow可以决定哪些ops在哪些设备上运行，达到分布式的效果
+</li>
+<li>TensorFlow可以指定CPU/GPU运行
+</li>
+<li>每个Tensor都具备: Type\Rank\Shape。 其中Type指元素的类型，float/int等。关于Tensor的Rank和Shape，例子如下：
+Rank Math entity                      Python example                                 
+ 0    Scalar (magnitude only)          s = 483                                        
+ 1    Vector (magnitude and direction) v = [1.1, 2.2, 3.3]                            
+ 2    Matrix (table of numbers)        m = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]          
+ 3    3-Tensor (cube of numbers)       t = [[<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>, <sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup>, <sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup>], [<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup>, <sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup>,              
+                                       <sup><a id="fnr.6" name="fnr.6" class="footref" href="#fn.6">6</a></sup>], [<sup><a id="fnr.7" name="fnr.7" class="footref" href="#fn.7">7</a></sup>, <sup><a id="fnr.8" name="fnr.8" class="footref" href="#fn.8">8</a></sup>, <sup><a id="fnr.9" name="fnr.9" class="footref" href="#fn.9">9</a></sup>]]                     
+ n    n-Tensor (you get the idea)      &#x2026;.                                           
+
+<p>
+Rank Shape              Dimension number Example                                  
+ 0    []                 0-D              A 0-D tensor. A scalar.                  
+ 1    [D0]               1-D              A 1-D tensor with shape <sup><a id="fnr.10" name="fnr.10" class="footref" href="#fn.10">10</a></sup>.             
+ 2    [D0, D1]           2-D              A 2-D tensor with shape [3, 4].          
+ 3    [D0, D1, D2]       3-D              A 3-D tensor with shape [1, 4, 3].       
+ n    [D0, D1, &#x2026; Dn-1] n-D              A tensor with shape [D0, D1, &#x2026;         
+                                          Dn-1].                                   
+</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> 补充材料</h3>
+<div class="outline-text-3" id="text-1-3">
+</div><div id="outline-container-sec-1-3-1" class="outline-4">
+<h4 id="sec-1-3-1"><span class="section-number-4">1.3.1</span> 矩阵的秩及其求法</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+参考： <a href="https://wenku.baidu.com/view/7936452ced630b1c59eeb5da.html">https://wenku.baidu.com/view/7936452ced630b1c59eeb5da.html</a>
+注： 矩阵的秩与Tensor的Rank似乎不同。 矩阵为2阶张量， 即Tensor rank=2。
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> 文档链接</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+<a href="https://www.tensorflow.org/versions/r0.12/get_started/basic_usage.html#basic-usage">https://www.tensorflow.org/versions/r0.12/get_started/basic_usage.html#basic-usage</a>
+</p>
+</div>
+</div>
+</div>
+
+
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Tutorials</h2>
+</div>
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 实例</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 线性回归</h3>
+<div class="outline-text-3" id="text-3-1">
+<div class="org-src-container">
+
+<pre class="src src-python"># train: 训练数据集，数据类型为pd.DataFrame
+# tests: 测试数据集，数据类型为pd.DataFrame
+def build_lr(train, tests):
+
+    x = tf.placeholder(tf.float32, shape=[None, 960])
+    yr = tf.placeholder(tf.float32, shape=[None, 1])
+
+    xtrain = train.iloc[:, :-1].values.tolist()
+    ytrain = train.iloc[:, -1].values.reshape(-1, 1).tolist()
+    #print(xtrain)
+
+    # 构建简单的线性回归方程
+    W = tf.Variable(tf.zeros([960, 1]))
+    b = tf.Variable(tf.zeros([1]))
+    y = tf.matmul(x, W) + b
+
+    # 选择MSE作为loss function
+    loss = tf.reduce_mean(tf.square(y - yr))
+    optimizer = tf.train.AdamOptimizer(0.001)
+    ops = optimizer.minimize(loss)
+
+    init = tf.global_variables_initializer()
+
+    # 开始运行
+    with tf.Session() as sess:
+	# 训练模型
+	sess.run(init)
+
+	for step in range(200):
+	    sess.run(ops, feed_dict={x: xtrain, yr: ytrain})
+
+	    if step % 20 == 0:
+		print(step, sess.run(loss, feed_dict={x: xtrain, yr: ytrain}))
+
+	# 预测输出
+	final = sess.run(y, feed_dict={x: tests.iloc[:, :-1].values})
+
+    return final
+</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.4" name="fn.4" class="footnum" href="#fnr.4">4</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.5" name="fn.5" class="footnum" href="#fnr.5">5</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.6" name="fn.6" class="footnum" href="#fnr.6">6</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.7" name="fn.7" class="footnum" href="#fnr.7">7</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.8" name="fn.8" class="footnum" href="#fnr.8">8</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.9" name="fn.9" class="footnum" href="#fnr.9">9</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+<div class="footdef"><sup><a id="fn.10" name="fn.10" class="footnum" href="#fnr.10">10</a></sup> <p>DEFINITION NOT FOUND.</p></div>
+
+
+</div>
+</div></div>
+<div id="postamble" class="status">
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-08 Mon 16:49</p></div>
+</div>
+</body>
+</html>

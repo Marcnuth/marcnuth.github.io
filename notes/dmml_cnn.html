@@ -3,11 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Java Exceptions and Solutions</title>
-<!-- 2017-04-27 Thu 17:21 -->
+<title>CNN学习笔记</title>
+<!-- 2017-05-16 Tue 14:49 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
+<meta  name="keywords" content="CNN 神经网络" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center; }
@@ -143,85 +144,58 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Java Exceptions and Solutions</h1>
+<h1 class="title">CNN学习笔记</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1. Exceptions Table</a></li>
+<li><a href="#sec-1">1. 概念</a>
+<ul>
+<li><a href="#sec-1-1">1.1. 卷积</a></li>
+<li><a href="#sec-1-2">1.2. 卷积核</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-<p>
-<i>This article is forbidden to publish elsewhere without permission. Contact marcnuth(AT)foxmail.com for permission.</i>
-</p>
 
 
 <div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> Exceptions Table</h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> 概念</h2>
 <div class="outline-text-2" id="text-1">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 卷积</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+卷积是一种提取特征的办法。 比如 y = f(x)， x为输入的图像，y为一个输出的值，f即为卷积。
+当f为sum时，即为求和卷积，f为mean时，即为求均值卷积。
+</p>
+
+<p>
+下面的图片给出了求得9个卷积值的过程，
+<i><img src="imgs/dmml_cnn_convolution.gif" alt="dmml_cnn_convolution.gif" /></i>
+</p>
+</div>
+</div>
 
 
-<colgroup>
-<col  class="left" />
 
-<col  class="left" />
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 卷积核</h3>
+<div class="outline-text-3" id="text-1-2">
+<p>
+一个卷积核对应一个卷积，即为一种提取特征的办法。
+</p>
 
-<col  class="left" />
-
-<col  class="left" />
-
-<col  class="left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="left">Exception</th>
-<th scope="col" class="left">Library</th>
-<th scope="col" class="left">Description</th>
-<th scope="col" class="left">Solution</th>
-<th scope="col" class="left">Extra</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="left">com.fasterxml.jackson.databind.JsonMappingException</td>
-<td class="left">jackson</td>
-<td class="left">No suitable constructor found for type</td>
-<td class="left">1. for inner class, please add static; 2. Check the default constructor exists or not</td>
-<td class="left">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="left">com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException</td>
-<td class="left">jackson</td>
-<td class="left">Unrecognized field "&#x2026;"</td>
-<td class="left">1. Add @JsonIgnoreProperties(ignoreUnknown=true) on the class</td>
-<td class="left">&#xa0;</td>
-</tr>
-
-<tr>
-<td class="left">java.net.SocketException</td>
-<td class="left">java</td>
-<td class="left">Connection reset</td>
-<td class="left">1. Peer close socket when another is still reading, check if peer will close in advance</td>
-<td class="left"><a href="http://stackoverflow.com/questions/62929/java-net-socketexception-connection-reset">http://stackoverflow.com/questions/62929/java-net-socketexception-connection-reset</a></td>
-</tr>
-
-<tr>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-</tr>
-</tbody>
-</table>
+<p>
+毕竟，只有一个卷积核，即只有一种提取特征的方法时，可能不能训练出很好的模型。
+</p>
+</div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-03-09 Thu 15:03</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-08 Mon 14:43</p></div>
 </div>
 </body>
 </html>

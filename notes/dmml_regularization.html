@@ -3,11 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Java Exceptions and Solutions</title>
-<!-- 2017-04-27 Thu 17:21 -->
+<title>机器学习中的正则化</title>
+<!-- 2017-05-16 Tue 14:49 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
+<meta  name="keywords" content="机器学习 Regularization 正则化" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center; }
@@ -143,85 +144,115 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Java Exceptions and Solutions</h1>
+<h1 class="title">机器学习中的正则化</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1. Exceptions Table</a></li>
+<li><a href="#sec-1">1. Regularization（正则化）存在的意义</a></li>
+<li><a href="#sec-2">2. 常用的正则化项</a>
+<ul>
+<li><a href="#sec-2-1">2.1. 前提</a></li>
+<li><a href="#sec-2-2">2.2. L0范数</a></li>
+<li><a href="#sec-2-3">2.3. L1范数（稀疏规则算子： Lasso Regularization）</a></li>
+<li><a href="#sec-2-4">2.4. L2范数（岭回归：Ridge Regression/权值衰减：weight decay）</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
-<p>
-<i>This article is forbidden to publish elsewhere without permission. Contact marcnuth(AT)foxmail.com for permission.</i>
-</p>
 
 
 <div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> Exceptions Table</h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> Regularization（正则化）存在的意义</h2>
 <div class="outline-text-2" id="text-1">
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<p>
+在监督学习过程中，通常都存在这样的问题和前提：
+</p>
+<ul class="org-ul">
+<li>监督学习过程中，误差越小则模型越好
+</li>
+<li>误差分为训练误差和测试误差，训练误差和测试误差往往是不相等的，且我们无法计算出测试误差
+</li>
+<li>通常而言，模型越简单，其泛化能力越好，测试误差也会更低
+</li>
+</ul>
 
+<p>
+<b>正则化的目的即是在保证模型“简单”的前提下，最小化训练误差，从而使模型有更好的泛化能力。</b>
+</p>
 
-<colgroup>
-<col  class="left" />
+<p>
+从另一个角度看，正则化项也被称之为惩罚项(penalty term)。通常情况下，我们要求损失函数最小化，即要求训练误差最小化。在损失函数后面添加一个惩罚项，保证了结构风险最小化，即降低过度依赖经验判断的风险。
+</p>
+</div>
+</div>
 
-<col  class="left" />
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 常用的正则化项</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 前提</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+前面我们提到， 模型越“简单”越好。但是，这个“简单”应该如何表示成数学表达式，从而方便建模？
+通常大家认为： <b>模型越简单，参数越稀疏。</b> 
+为什么参数稀疏会代表模型简单呢？可以从以下一些方面考虑：
+</p>
+<ul class="org-ul">
+<li>更少的特征组合： 在特征选择过程中，假设原始输入有1000个特征，存在两个模型，一个使用了800个特征，一个使用了500个特征，而两者的训练误差相等。此时，使用500个特征的模型更简单，参数也更稀疏（未被选择的特征被标记为0）.
+</li>
+<li>可解释性： 借用上一条的例子，越少的特征使得我们更容易却解释模型，解释为什么这样的特征有用。
+</li>
+</ul>
+<p>
+这种想法直接促使了L0范数和L1范数的产生。
+</p>
 
-<col  class="left" />
+<p>
+还有一种想法： <b>模型越简单，则其受每个参数的影响都很小，即每个输入的权值都比较小。</b>
+这种想法是L2范数的产生前提之一。
+</p>
+</div>
+</div>
 
-<col  class="left" />
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> L0范数</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+L0范数是值向量中包含的0的个数。使用L0范数作为规则项时，即希望向量中的0越多越好，即矩阵越稀疏越好。
+但是，因为求解L0范数是NP问题，因此L0范数在实际情况中几乎不会被使用。同时，这也发展出了其他好用的正则化项以代替L0范数。
+</p>
+</div>
+</div>
 
-<col  class="left" />
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="left">Exception</th>
-<th scope="col" class="left">Library</th>
-<th scope="col" class="left">Description</th>
-<th scope="col" class="left">Solution</th>
-<th scope="col" class="left">Extra</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="left">com.fasterxml.jackson.databind.JsonMappingException</td>
-<td class="left">jackson</td>
-<td class="left">No suitable constructor found for type</td>
-<td class="left">1. for inner class, please add static; 2. Check the default constructor exists or not</td>
-<td class="left">&#xa0;</td>
-</tr>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> L1范数（稀疏规则算子： Lasso Regularization）</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+L1范数指向量中各个元素的绝对值之和。
+L1是L0的最优凸近似，现实模型中，经常使用L1代替L0。
+</p>
 
-<tr>
-<td class="left">com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException</td>
-<td class="left">jackson</td>
-<td class="left">Unrecognized field "&#x2026;"</td>
-<td class="left">1. Add @JsonIgnoreProperties(ignoreUnknown=true) on the class</td>
-<td class="left">&#xa0;</td>
-</tr>
+<p>
+那么，为什么L1范数可以使权值稀疏呢？
+</p>
+</div>
+</div>
 
-<tr>
-<td class="left">java.net.SocketException</td>
-<td class="left">java</td>
-<td class="left">Connection reset</td>
-<td class="left">1. Peer close socket when another is still reading, check if peer will close in advance</td>
-<td class="left"><a href="http://stackoverflow.com/questions/62929/java-net-socketexception-connection-reset">http://stackoverflow.com/questions/62929/java-net-socketexception-connection-reset</a></td>
-</tr>
-
-<tr>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-<td class="left">&#xa0;</td>
-</tr>
-</tbody>
-</table>
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> L2范数（岭回归：Ridge Regression/权值衰减：weight decay）</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+L2范数是指各个元素的平方和再对其取平方根。
+L2范数因为其能解决
+</p>
+</div>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-03-09 Thu 15:03</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-04-29 Sat 18:15</p></div>
 </div>
 </body>
 </html>
