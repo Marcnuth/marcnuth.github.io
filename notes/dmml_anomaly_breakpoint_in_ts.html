@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>异常检测和断点检测在时间序列中的应用</title>
-<!-- 2017-03-01 Wed 17:41 -->
+<!-- 2017-05-16 Tue 22:10 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -141,14 +141,407 @@ for the JavaScript code in this tag.
  }
 /*]]>*///-->
 </script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
 </head>
 <body>
 <div id="content">
 <h1 class="title">异常检测和断点检测在时间序列中的应用</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Break Point Detection</a>
+<ul>
+<li><a href="#sec-1-1">1.1. Why need Break Point Detection?</a></li>
+<li><a href="#sec-1-2">1.2. CUSUM</a>
+<ul>
+<li><a href="#sec-1-2-1">1.2.1. 原理</a></li>
+<li><a href="#sec-1-2-2">1.2.2. 参数选择</a></li>
+<li><a href="#sec-1-2-3">1.2.3. 优点：</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-3">1.3. Adaptive threshold algorithm</a></li>
+<li><a href="#sec-1-4">1.4. 其他方法</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2. Anomaly Detection</a>
+<ul>
+<li><a href="#sec-2-1">2.1. Grubbs' Test</a>
+<ul>
+<li><a href="#sec-2-1-1">2.1.1. 概述</a></li>
+<li><a href="#sec-2-1-2">2.1.2. 原理</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-2">2.2. Tietjen-Moore Test for Outliers</a>
+<ul>
+<li><a href="#sec-2-2-1">2.2.1. 概述</a></li>
+<li><a href="#sec-2-2-2">2.2.2. 原理</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-3">2.3. Generalized ESD(extreme Studentized deviate) Test </a>
+<ul>
+<li><a href="#sec-2-3-1">2.3.1. 目的</a></li>
+</ul>
+</li>
+<li><a href="#sec-2-4">2.4. Seasonal Hybrid ESD (S-H-ESD)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Break Point Detection</h2>
+<div class="outline-text-2" id="text-1">
+</div><div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Why need Break Point Detection?</h3>
+<div class="outline-text-3" id="text-1-1">
+<ul class="org-ul">
+<li>Break Point is a kind of anomaly
+</li>
+<li>Break Point may influence the result for fitting ARIMA
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> CUSUM</h3>
+<div class="outline-text-3" id="text-1-2">
+</div><div id="outline-container-sec-1-2-1" class="outline-4">
+<h4 id="sec-1-2-1"><span class="section-number-4">1.2.1</span> 原理<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup></h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+对于时间序列 $ X = x<sub>1</sub>, x<sub>2</sub>, &#x2026;, x<sub>n</sub> $， 假设: $$ S_{n + 1} = max(0, S_n + x_n - w_n)$$
+选定某个阈值 h, 当 S<sub>k</sub> &gt; h 时， 即认为在k处出现了断点（发生了异常）。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-2" class="outline-4">
+<h4 id="sec-1-2-2"><span class="section-number-4">1.2.2</span> 参数选择</h4>
+<div class="outline-text-4" id="text-1-2-2">
+<p>
+通常情况下， 选择 $ w<sub>i</sub> = x.mean() , h = 0 $
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-1-2-3" class="outline-4">
+<h4 id="sec-1-2-3"><span class="section-number-4">1.2.3</span> 优点：</h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+计算简单，快捷
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Adaptive threshold algorithm<sup><a id="fnr.2" name="fnr.2" class="footref" href="#fn.2">2</a></sup></h3>
+</div>
+
+<div id="outline-container-sec-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> 其他方法</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+通过暴力计算时间序列各部分的拟合函数，找到残差最小的点。参考以下代码：
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-R">#cumsum test
+fit &lt;- arima(x, order = c(2,0,0), include.mean = FALSE)
+e &lt;- residuals(fit)
+sigma &lt;- sqrt(fit$sigma2)
+n &lt;- length(x)
+cs &lt;- cumsum(e) / sigma
+
+#find the break point
+rss &lt;- sum(residuals(fit)^2)
+sigma2 &lt;- fit$sigma2
+stats &lt;- rep(NA, n)
+for (i in seq.int(20, n-20))
+{
+  fit1 &lt;- arima(x[seq(1,i)], order = c(2,0,0), include.mean = FALSE)
+  fit2 &lt;- arima(x[seq(i+1,n)], order = c(2,0,0), include.mean = FALSE)
+  ess &lt;- sum(c(residuals(fit1), residuals(fit2))^2)
+  stats[i] &lt;- (rss - ess)/sigma2
+}
+plot(stats)
+abline(h = qchisq(0.05, df = length(coef(fit)), lower.tail = FALSE), lty = 2, col = "red")
+which.min(1 - pchisq(stats, df = 2))
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Anomaly Detection</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1"><span class="section-number-3">2.1</span> Grubbs' Test<sup><a id="fnr.3" name="fnr.3" class="footref" href="#fn.3">3</a></sup></h3>
+<div class="outline-text-3" id="text-2-1">
+</div><div id="outline-container-sec-2-1-1" class="outline-4">
+<h4 id="sec-2-1-1"><span class="section-number-4">2.1.1</span> 概述</h4>
+<div class="outline-text-4" id="text-2-1-1">
+<p>
+Grubbs' test (Grubbs 1969 and Stefansky 1972) is used to detect a single outlier in a univariate data set that follows an approximately normal distribution.
+Grubbs' test is also known as the maximum normed residual test.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-1-2" class="outline-4">
+<h4 id="sec-2-1-2"><span class="section-number-4">2.1.2</span> 原理</h4>
+<div class="outline-text-4" id="text-2-1-2">
+<p>
+Grubbs' test is defined for the hypothesis:
+</p>
+
+<p>
+H0:        There are no outliers in the data set
+Ha:        There is exactly one outlier in the data set
+</p>
+
+<p>
+Test Statistic:        The Grubbs' test statistic is defined as:
+$$ G = \frac{\max{|Y_{i} - \bar{Y}|}} {s} $$
+</p>
+
+<p>
+with $ \bar{Y}$ and \(s\) denoting the sample mean and standard deviation, respectively. The Grubbs' test statistic is the largest absolute deviation from the sample mean in units of the sample standard deviation.
+This is the two-sided version of the test. The Grubbs' test can also be defined as one of the following one-sided tests:
+</p>
+
+<p>
+test whether the minimum value is an outlier
+$$ G = \frac{\bar{Y} - Y_{min}} {s} $$
+with Ymin denoting the minimum value.
+</p>
+
+<p>
+test whether the maximum value is an outlier
+$$ G = \frac{Y_{max} - \bar{Y}} {s} $$ 
+with Ymax denoting the maximum value.
+</p>
+
+
+<p>
+Significance Level Critical Region:
+</p>
+
+<p>
+For the two-sided test, the hypothesis of no outliers is rejected if
+$$ G > \frac{(N-1)} {\sqrt{N}}
+                \sqrt{\frac{(t_{\alpha/(2N),N-2})^2}
+                {N-2+(t_{\alpha/(2N),N-2})^2}}
+$$
+</p>
+
+<p>
+with tα/(2N),N−2 denoting the critical value of the t distribution with (N-2) degrees of freedom and a significance level of α/(2N).
+For one-sided tests, we use a significance level of level of α/N.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2"><span class="section-number-3">2.2</span> Tietjen-Moore Test for Outliers<sup><a id="fnr.4" name="fnr.4" class="footref" href="#fn.4">4</a></sup></h3>
+<div class="outline-text-3" id="text-2-2">
+</div><div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1"><span class="section-number-4">2.2.1</span> 概述</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+The Tietjen-Moore test (Tietjen-Moore 1972) is used to detect multiple outliers in a univariate data set that follows an approximately normal distribution.
+The Tietjen-Moore test is a generalization of the Grubbs' test to the case of multiple outliers. 
+If testing for a single outlier, the Tietjen-Moore test is equivalent to the Grubbs' test.
+</p>
+
+<p>
+It is important to note that the Tietjen-Moore test requires that the suspected number of outliers be specified exactly. 
+If this is not known, it is recommended that the generalized extreme studentized deviate test be used instead 
+(this test only requires an upper bound on the number of suspected outliers).
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2"><span class="section-number-4">2.2.2</span> 原理</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+The Tietjen-Moore test is defined for the hypothesis:
+H0:        There are no outliers in the data set
+Ha:        There are exactly k outliers in the data set
+Test Statistic:        Sort the n data points from smallest to the largest so that yi denotes the ith largest data value.
+The test statistic for the k largest points is
+</p>
+
+<p>
+$$ L_{k} = \frac{\sum_{i=1}^{n-k}{(y_{i} -
+               \bar{y}_{k})^{2}}}
+               {\sum_{i=1}^{n}{(y_{i} - \bar{y})^{2}}} 
+$$ 
+with y¯ denoting the sample mean for the full sample and y¯k denoting the sample mean with the largest k points removed.
+</p>
+
+<p>
+The test statistic for the k smallest points is
+</p>
+
+<p>
+$$
+L_{k} = \frac{\sum_{i=k+1}^{n}{(y_{i} -
+               \bar{y}_{k})^{2}}}
+               {\sum_{i=1}^{n}{(y_{i} - \bar{y})^{2}}}
+$$
+with y¯ denoting the sample mean for the full sample and y¯k denoting the sample mean with the smallest k points removed.
+</p>
+
+<p>
+To test for outliers in both tails, compute the absolute residuals
+</p>
+
+<p>
+$$
+r_{i} = |y_{i} - \bar{y}|
+$$
+</p>
+
+<p>
+and then let zi denote the yi values sorted by their absolute residuals in ascending order. The test statistic for this case is
+</p>
+
+<p>
+$$
+E_{k} = \frac{\sum_{i=1}^{n-k}{(z_{i} -
+              \bar{z}_{k})^{2}}}
+              {\sum_{i=1}^{n}{(z_{i} - \bar{z})^{2}}}
+$$
+</p>
+
+<p>
+with z¯ denoting the sample mean for the full data set and z¯k denoting the sample mean with the largest k points removed.
+</p>
+
+
+<p>
+Significance Level:        α
+Critical Region:
+</p>
+
+<p>
+The critical region for the Tietjen-Moore test is determined by simulation. 
+The simulation is performed by generating a standard normal random sample of size n and computing the Tietjen-Moore test statistic. 
+Typically, 10,000 random samples are used. The value of the Tietjen-Moore statistic obtained from the data is compared to this reference distribution.
+The value of the test statistic is between zero and one. If there are no outliers in the data, the test statistic is close to 1. 
+If there are outliers in the data, the test statistic will be closer to zero. 
+Thus, the test is always a lower, one-tailed test regardless of which test statisic is used, Lk or Ek.
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3"><span class="section-number-3">2.3</span> Generalized ESD(extreme Studentized deviate) Test <sup><a id="fnr.5" name="fnr.5" class="footref" href="#fn.5">5</a></sup></h3>
+<div class="outline-text-3" id="text-2-3">
+</div><div id="outline-container-sec-2-3-1" class="outline-4">
+<h4 id="sec-2-3-1"><span class="section-number-4">2.3.1</span> 目的</h4>
+<div class="outline-text-4" id="text-2-3-1">
+<p>
+The generalized (extreme Studentized deviate) ESD test (Rosner 1983) is used to detect 
+one or more outliers in a univariate data set that follows an approximately normal distribution.
+</p>
+
+<p>
+The primary limitation of the Grubbs test and the Tietjen-Moore test is that the suspected number of outliers, 
+k, must be specified exactly. If k is not specified correctly, this can distort the conclusions of these tests. 
+On the other hand, the generalized ESD test (Rosner 1983) only requires that an upper bound for the suspected number of outliers be specified.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="section-number-3">2.4</span> Seasonal Hybrid ESD (S-H-ESD)</h3>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+<a href="https://en.wikipedia.org/wiki/CUSUM">CUSUM: WIKI</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p class="footpara">
+<a href="http://users.ics.forth.gr/~vsiris/papers/2006.ComCom.dos.pdf">Application of anomaly detection algorithms for detecting SYN flooding attacks</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p class="footpara">
+<a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h1.htm">Grubbs' Test for Outliers</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.4" name="fn.4" class="footnum" href="#fnr.4">4</a></sup> <p class="footpara">
+<a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h2.htm">Tietjen-Moore Test for Outliers</a>
+</p></div>
+
+<div class="footdef"><sup><a id="fn.5" name="fn.5" class="footnum" href="#fnr.5">5</a></sup> <p class="footpara">
+<a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda35h3.htm">Generalized ESD Test for Outliers</a>
+</p></div>
+
 
 </div>
+</div></div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-27 Mon 17:27</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-16 Tue 22:05</p></div>
 </div>
 </body>
 </html>
