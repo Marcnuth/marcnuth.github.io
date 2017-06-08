@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Marcnuth's blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- redirect to notes -->
+
+
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <script src="notes/oth/jquery-3.2.1.min.js"></script>
+    <script language="javascript">
+
+     $.getJSON( "notes/oth/index.json", function(data) {
+	 var items = [];
+	 $.each(data, function(id, ele) {
+	     items.push("<li><a href='notes/" + ele['file'] + ".html'><strong>" + ele['title'] + "</strong></a></li>");
+	 });
+
+	 $(".notes_list").html(items.join(""));
+	 
+     });
+     //window.location.href = "http://marcnuth.github.io/notes/index.html";
+
+    </script>
+    
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Don't complain, just work harder</h1>
+      <h2 class="project-tagline">邮箱: marcnuth(AT)foxmail.com </h2>
+    </section>
+
+    <section class="main-content">
+      <h3>文章列表</h3>
+
+      <ul class="notes_list">
+	  <li><a href="pages/java8.html"><strong>Java tips/tricks & FAQ</strong></a></li>
+	  <li><a href="pages/python.html"><strong>Python tips/tricks & FAQ</strong></a></li>
+      </ul>
+
+      <footer class="site-footer">
+
+        <span class="site-footer-credits">联系我: marcnuth(AT)foxmail.com</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
