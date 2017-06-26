@@ -3,12 +3,12 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>CNN学习笔记</title>
+<title>日志分析常见应用及场景调研笔记</title>
 <!-- 2017-06-08 Thu 22:06 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
-<meta  name="keywords" content="CNN 神经网络" />
+<meta  name="keywords" content="日志分析 machinelearning" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center; }
@@ -89,12 +89,6 @@
     { background-color: #ffff00; color: #000000; font-weight: bold; }
   /*]]>*/-->
 </style>
-<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
-<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
-<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
 <script type="text/javascript">
 /*
 @licstart  The following is the entire license notice for the
@@ -144,74 +138,142 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">CNN学习笔记</h1>
+<h1 class="title">日志分析常见应用及场景调研笔记</h1>
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#sec-1">1. 概念</a>
+<li><a href="#sec-1">1. 创业公司分析</a>
 <ul>
-<li><a href="#sec-1-1">1.1. 卷积</a></li>
-<li><a href="#sec-1-2">1.2. 卷积核</a></li>
+<li><a href="#sec-1-1">1.1. Sumologic</a>
+<ul>
+<li><a href="#sec-1-1-1">1.1.1. 数据</a></li>
+<li><a href="#sec-1-1-2">1.1.2. 应用场景</a></li>
+<li><a href="#sec-1-1-3">1.1.3. 应用挑战</a></li>
+<li><a href="#sec-1-1-4">1.1.4. 有什么用？</a></li>
+<li><a href="#sec-1-1-5">1.1.5. 使用的技术</a></li>
+<li><a href="#sec-1-1-6">1.1.6. 展现</a></li>
 </ul>
 </li>
-<li><a href="#sec-2">2. 问题</a>
-<ul>
-<li><a href="#sec-2-1">2.1. 回归时，输出方差太小，预测成均值，如何解决？</a></li>
+<li><a href="#sec-1-2">1.2. 神策数据</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
+
 
 
 <div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1"><span class="section-number-2">1</span> 概念</h2>
+<h2 id="sec-1"><span class="section-number-2">1</span> 创业公司分析</h2>
 <div class="outline-text-2" id="text-1">
 </div><div id="outline-container-sec-1-1" class="outline-3">
-<h3 id="sec-1-1"><span class="section-number-3">1.1</span> 卷积</h3>
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Sumologic</h3>
 <div class="outline-text-3" id="text-1-1">
+</div><div id="outline-container-sec-1-1-1" class="outline-4">
+<h4 id="sec-1-1-1"><span class="section-number-4">1.1.1</span> 数据</h4>
+<div class="outline-text-4" id="text-1-1-1">
 <p>
-卷积是一种提取特征的办法。 比如 y = f(x)， x为输入的图像，y为一个输出的值，f即为卷积。
-当f为sum时，即为求和卷积，f为mean时，即为求均值卷积。
-</p>
-
-<p>
-下面的图片给出了求得9个卷积值的过程，
-<i><img src="imgs/dmml_cnn_convolution.gif" alt="dmml_cnn_convolution.gif" /></i>
+Sumologic的原始数据为: 日志数据
 </p>
 </div>
 </div>
 
+<div id="outline-container-sec-1-1-2" class="outline-4">
+<h4 id="sec-1-1-2"><span class="section-number-4">1.1.2</span> 应用场景</h4>
+<div class="outline-text-4" id="text-1-1-2">
+<p>
+官网上是这样解释机器学习的应用场景<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>:
+<i>Machine learning applies adaptive algorithms to cluster patterns in your data and surfaces anomalies.</i>
+</p>
 
+<p>
+理解过来，Sumologic的应用场景应该是:
+</p>
+<ul class="org-ul">
+<li>找到异常点(异常检测)
+</li>
+<li>从数据中找到异常相关的数据
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-sec-1-1-3" class="outline-4">
+<h4 id="sec-1-1-3"><span class="section-number-4">1.1.3</span> 应用挑战</h4>
+<div class="outline-text-4" id="text-1-1-3">
+<ul class="org-ul">
+<li>数据并非结构化的，想要直接解析日志数据很难。解决办法：应用机器学习去发现模式、探测异常点并且比较时间周期。
+</li>
+<li>指数级的数据增长
+</li>
+<li>不具备自适应能力：很多工具都不能学习历史模式，并且要求人工参与才能获取到比较好的结果
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-4" class="outline-4">
+<h4 id="sec-1-1-4"><span class="section-number-4">1.1.4</span> 有什么用？</h4>
+<div class="outline-text-4" id="text-1-1-4">
+<ul class="org-ul">
+<li>根据用户的行为模式（包括季节性和周期性）确定应用程序开发工作的优先级。
+</li>
+<li>基于多维比较，模式发现和异常检测，快速定位问题
+</li>
+<li>快速发现安全威胁并了解威胁的优先级，并且无需人工参与
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-5" class="outline-4">
+<h4 id="sec-1-1-5"><span class="section-number-4">1.1.5</span> 使用的技术</h4>
+<div class="outline-text-4" id="text-1-1-5">
+<ul class="org-ul">
+<li>聚类： 挖掘模式并且从非大量非结构化的数据中发现异常
+</li>
+<li>Baselining： 定义并发现用户行为或统计学上的baseline， 并且能够实时和这些baseline进行比较
+</li>
+<li>统计分析： 依据统计学来发现异常点
+</li>
+<li>回归分析： 拟合过去数据，预测未来走势
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1-1-6" class="outline-4">
+<h4 id="sec-1-1-6"><span class="section-number-4">1.1.6</span> 展现</h4>
+<div class="outline-text-4" id="text-1-1-6">
+<ul class="org-ul">
+<li>logReduce: logReduce的作用是从非结构化的数据中发现某些数据结构，并将这些数据聚合起来。同时还允许用户下砖数据。
+</li>
+<li>logCompare: logCompare允许用户选取两个不同时间段，比较这两个时间段中的  模式增加/减少情况
+</li>
+</ul>
+</div>
+</div>
+</div>
 
 <div id="outline-container-sec-1-2" class="outline-3">
-<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 卷积核</h3>
-<div class="outline-text-3" id="text-1-2">
-<p>
-一个卷积核对应一个卷积，即为一种提取特征的办法。
-</p>
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> 神策数据</h3>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
 
-<p>
-毕竟，只有一个卷积核，即只有一种提取特征的方法时，可能不能训练出很好的模型。
-</p>
-</div>
-</div>
-</div>
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p class="footpara">
+<a href="https://www.sumologic.com/machine-learning/">Sumologic:机器学习在日志分析中的应用</a>
+</p></div>
 
 
-
-
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2"><span class="section-number-2">2</span> 问题</h2>
-<div class="outline-text-2" id="text-2">
-</div><div id="outline-container-sec-2-1" class="outline-3">
-<h3 id="sec-2-1"><span class="section-number-3">2.1</span> 回归时，输出方差太小，预测成均值，如何解决？</h3>
 </div>
-</div>
-</div>
+</div></div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-06-05 Mon 10:48</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-26 Fri 17:00</p></div>
 </div>
 </body>
 </html>

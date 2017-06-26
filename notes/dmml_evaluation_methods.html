@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>机器学习中的模型评价指标</title>
+<!-- 2017-06-09 Fri 14:30 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Marcnuth" />
+<meta  name="keywords" content="machine-learning evaluation" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/htmlize.css"/>
+<link rel="stylesheet" type="text/css" href="./oth/readtheorg/css/readtheorg.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="./oth/lib/js/jquery.stickytableheaders.min.js"></script>
+<script type="text/javascript" src="./oth/readtheorg/js/readtheorg.js"></script>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+<script type="text/javascript" src="http://orgmode.org/mathjax/MathJax.js"></script>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+    MathJax.Hub.Config({
+        // Only one of the two following lines, depending on user settings
+        // First allows browser-native MathML display, second forces HTML/CSS
+        //  config: ["MMLorHTML.js"], jax: ["input/TeX"],
+            jax: ["input/TeX", "output/HTML-CSS"],
+        extensions: ["tex2jax.js","TeX/AMSmath.js","TeX/AMSsymbols.js",
+                     "TeX/noUndefined.js"],
+        tex2jax: {
+            inlineMath: [ ["\\(","\\)"] ],
+            displayMath: [ ['$$','$$'], ["\\[","\\]"], ["\\begin{displaymath}","\\end{displaymath}"] ],
+            skipTags: ["script","noscript","style","textarea","pre","code"],
+            ignoreClass: "tex2jax_ignore",
+            processEscapes: false,
+            processEnvironments: true,
+            preview: "TeX"
+        },
+        showProcessingMessages: true,
+        displayAlign: "center",
+        displayIndent: "2em",
+
+        "HTML-CSS": {
+             scale: 100,
+             availableFonts: ["STIX","TeX"],
+             preferredFont: "TeX",
+             webFont: "TeX",
+             imageFont: "TeX",
+             showMathMenu: true,
+        },
+        MMLorHTML: {
+             prefer: {
+                 MSIE:    "MML",
+                 Firefox: "MML",
+                 Opera:   "HTML",
+                 other:   "HTML"
+             }
+        }
+    });
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">机器学习中的模型评价指标</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. 概述</a></li>
+<li><a href="#sec-2">2. 思维图</a></li>
+<li><a href="#sec-3">3. 评测指标</a>
+<ul>
+<li><a href="#sec-3-1">3.1. 分类问题</a>
+<ul>
+<li><a href="#sec-3-1-1">3.1.1. 概述</a></li>
+<li><a href="#sec-3-1-2">3.1.2. 混淆矩阵(confusion matrix)</a></li>
+<li><a href="#sec-3-1-3">3.1.3. ROC</a></li>
+<li><a href="#sec-3-1-4">3.1.4. PRC</a></li>
+<li><a href="#sec-3-1-5">3.1.5. AUC</a></li>
+</ul>
+</li>
+<li><a href="#sec-3-2">3.2. 回归问题</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1. MSE/RMSE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<p>
+<i>本文由作者原创，未经允许禁止转载。联系marcnuth(AT)foxmail.com了解转载事宜。</i>
+</p>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> 概述</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+机器学习的整个流程中，除了特征工程和模型设计上，评价优化也是很重要的一步。
+之前一直想着把相关的内容做一个总结，趁着最近工作上也遇到了很多类似的问题，索性写一篇博文记录整理一下相关知识。
+</p>
+
+<p>
+在机器学习的实际应用中，我们经常遇到这样三类问题:
+</p>
+<ol class="org-ol">
+<li>对于该问题，应该用什么指标去评价整个算法的优劣？
+</li>
+<li>在对模型/工作流程做了一些优化后，最终的表现是否有所提升？
+</li>
+<li>在多个模型之间对比，哪个模型更好？
+</li>
+</ol>
+
+<p>
+其中，对于问题1,我们可以认为这是评测指标选择问题，针对不同任务有不同的评价指标。
+对于问题2和3,都可以归类为算法优劣对比的问题。
+问题3说的很明白，在有多个模型可供选择的时候该问题很容易发生。
+而对于问题2,一些可能的真实场景是，去除/增加某个特征，模型是否得到优化；调整参数后，模型是否得到优化等。
+</p>
+
+<p>
+本文将主要针对问题1进行讨论总结，对于问题2和问题3,在之前我的文章中，已经讨论过了，可以参见 <a href="./dmml_modle_select_compare.html">《机器学习中如何正确的进行模型选择》</a>.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> 思维图</h2>
+<div class="outline-text-2" id="text-2">
+
+<div class="figure">
+<p><img src="./imgs/dmml_evaluation_mind_graph.svg" alt="dmml_evaluation_mind_graph.svg" />
+</p>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 评测指标</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 分类问题</h3>
+<div class="outline-text-3" id="text-3-1">
+</div><div id="outline-container-sec-3-1-1" class="outline-4">
+<h4 id="sec-3-1-1"><span class="section-number-4">3.1.1</span> 概述</h4>
+<div class="outline-text-4" id="text-3-1-1">
+<p>
+分类问题包括二分类问题和多分类问题。其中，多分类问题都可以归结为二分类问题。
+在本文中，针对分类问题的评测指标，我们都将将问题简化为二类分类问题的评测问题。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-2" class="outline-4">
+<h4 id="sec-3-1-2"><span class="section-number-4">3.1.2</span> 混淆矩阵(confusion matrix)</h4>
+<div class="outline-text-4" id="text-3-1-2">
+<p>
+对于二分类问题，有
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+
+<col  class="left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">&#xa0;</th>
+<th scope="col" class="left">Real Positive</th>
+<th scope="col" class="left">Real Negative</th>
+<th scope="col" class="left">Metrics</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">Predict Positive</td>
+<td class="left">TP</td>
+<td class="left">FP</td>
+<td class="left">Precision=TP/(TP+FP)</td>
+</tr>
+
+<tr>
+<td class="left">Preidct Negative</td>
+<td class="left">TN</td>
+<td class="left">FN</td>
+<td class="left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="left">Metrics</td>
+<td class="left">Recall=TP/(TP + TN)</td>
+<td class="left">&#xa0;</td>
+<td class="left">Accuracy=(TP+TN)/(TP+TN+FP+FN)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+例如，ＴＰ的意思即为truly predict it as positive， 即分类正确。
+而ＦＰ为falsely predict it as positive， 即原本是negative，分类错误。
+</p>
+
+<p>
+通过组合 TP/FP/TN/FN，可以得到不同的评测指标。
+如上面表格显示的，可以得到 recall/precision/accuracy 3个不同的指标。
+另外，为了平衡 recall和precision 这两个指标的值，有另一个常用的指标:
+F1-measure = 2RP/(R + P)
+其中 Ｒ代表recall, P代表precision. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-3" class="outline-4">
+<h4 id="sec-3-1-3"><span class="section-number-4">3.1.3</span> ROC</h4>
+<div class="outline-text-4" id="text-3-1-3">
+<p>
+ROC, 即Receiver Operating Characteristic。
+</p>
+<ul class="org-ul">
+<li>X轴: False Positive Rate = FP / (TP + FP)
+</li>
+<li>Y轴: True Posistive Rate = Recall = TP / (TP+TN)
+</li>
+</ul>
+
+<p>
+ROC曲线的一个例子:
+</p>
+
+<div class="figure">
+<p><img src="./imgs/dmml_evaluation_roc.png" alt="dmml_evaluation_roc.png" width="70%" height="50%" />
+</p>
+</div>
+
+
+<p>
+画ROC曲线的步骤：
+</p>
+<ol class="org-ol">
+<li>预测出各个类别的概率
+</li>
+<li>选取不同的阈值，根据该阈值分类，并计算出TPR, FPR
+</li>
+<li>反复执行#2, 得到一组数据，画出ＲＯＣ
+</li>
+</ol>
+
+<p>
+ROC曲线反映TP率和FP率的关联变化关系。 理论上说，当某点的切线斜率最大时，即为使得模型最好的点，该点的阈值为最佳阈值。
+</p>
+
+<p>
+问题： 是否ＦＰＲ很低就意味着模型的训练效果好呢？
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-4" class="outline-4">
+<h4 id="sec-3-1-4"><span class="section-number-4">3.1.4</span> PRC</h4>
+<div class="outline-text-4" id="text-3-1-4">
+<p>
+PRC即 precision-recall 曲线.
+</p>
+<ul class="org-ul">
+<li>X轴: recall
+</li>
+<li>Y轴: precision
+</li>
+</ul>
+
+
+<p>
+PRC 曲线的一个例子:
+</p>
+
+<div class="figure">
+<p><img src="./imgs/dmml_evaluation_prc.png" alt="dmml_evaluation_prc.png" width="70%" height="50%" />
+</p>
+</div>
+
+<p>
+画 PRC 的步骤与画 ROC 的步骤类似，这里就不再赘述。
+</p>
+
+<p>
+ROC和PRC其实是相当类似的，区别在于两者的X/Y轴所取的数据不一样。ROC和PRC值得注意的地方：
+</p>
+<ul class="org-ul">
+<li>两者都提供给了一种办法使得我们去评估不同阈值下的验证结果
+</li>
+<li>两者都是基于二分类任务的
+</li>
+<li>通过计算曲线下的面积也是一种评估办法
+</li>
+<li>ROC 对类别的分布不敏感， 比如正负例在验证集中的占比变化了，对 ROC 的影响不大
+</li>
+<li>ROC 可以用来选择合适的阈值
+</li>
+<li>PRC 展示了和误分类率的关系
+</li>
+<li>PRC 很适合用于处理负类过多的问题，例如不平衡问题
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-3-1-5" class="outline-4">
+<h4 id="sec-3-1-5"><span class="section-number-4">3.1.5</span> AUC</h4>
+<div class="outline-text-4" id="text-3-1-5">
+<p>
+AUC，即Area under the curve， 其中这个curve指的是ROC.
+理论上，一个随机分类的AUC=0.5， 一个完美的分类器(将所有正例负例都分类正确)的AUC=1。
+AUC也常被用来评估一个模型是否足够好，当AUC越接近于1时，则模型越好。
+</p>
+
+<p>
+不过值得注意的是，AUC给出的是一个很总体的评价。
+结合ROC曲线的计算方式，我们知道，最终的一个测试误差和选取的分类阈值有关，如果阈值选取的不好，则即便AUC更高也可能得到一个不够好的测试误差。
+但是，如果一个模型的ＡＵＣ越高，表明他的分类能力越强(受阈值的影响越小)，我们也有理由相信它的泛化能力越强。
+</p>
+
+<p>
+更坦白的说，如果是在比赛中，AUC不一定是最佳的衡量标准，而是应该根据ＲＯＣ曲线去选取一个最佳的阈值。毕竟，比赛排名是和测试集相关的。
+但是真正在生产环境中，我们要求的是更好的泛化能力，因此AUC就显得比较重要了.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> 回归问题</h3>
+<div class="outline-text-3" id="text-3-2">
+</div><div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> MSE/RMSE</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+MSE，即 Mean Squared Error。其计算公式为:
+</p>
+
+<p>
+$$ MSE = \frac{1}{n} \sum_{i=1}^{n}{(\bar{Y_i} - Y_i)^2} $$
+</p>
+
+<p>
+RMSE, 即 Root Mean Squared Error。其计算公式为:
+</p>
+
+<p>
+$$ RMSE = \sqrt {MSE}$$
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-06-09 Fri 14:29</p></div>
+</div>
+</body>
+</html>

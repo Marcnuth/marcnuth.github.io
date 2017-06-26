@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>从R迁移到Python：常用库和函数的对比</title>
-<!-- 2017-05-18 Thu 17:42 -->
+<!-- 2017-06-08 Thu 22:06 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -224,17 +224,17 @@ for the JavaScript code in this tag.
 <div class="org-src-container">
 
 <pre class="src src-R"># generate data
-a &lt;- c(0:100)
+a &lt;- c(0:50)
 
 # run tapply, find the max value for every segment
-res = tapply(a, c(0:100)%/%10, FUN=max)
+res = tapply(a, c(0:50)%/%10, FUN=max)
 print(res)
 </pre>
 </div>
 
 <pre class="example">
-0   1   2   3   4   5   6   7   8   9  10 
-9  19  29  39  49  59  69  79  89  99 100 
+0  1  2  3  4  5 
+9 19 29 39 49 50 
 </pre>
 </div>
 </div>
@@ -244,15 +244,15 @@ print(res)
 <div class="outline-text-4" id="text-2-1-2">
 <div class="org-src-container">
 
-<pre class="src src-python">a = range(0, 100)
-res = [max(a[i:i+10]) for i in range(0, 100, 10)]
+<pre class="src src-python">a = range(0, 50)
+res = [max(a[i:i+10]) for i in range(0, 50, 10)]
 
 print(res)
 </pre>
 </div>
 
 <pre class="example">
-[9, 19, 29, 39, 49, 59, 69, 79, 89, 99]
+[9, 19, 29, 39, 49]
 </pre>
 </div>
 </div>
@@ -260,7 +260,7 @@ print(res)
 </div>
 </div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-18 Thu 17:42</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-05-18 Thu 20:52</p></div>
 </div>
 </body>
 </html>

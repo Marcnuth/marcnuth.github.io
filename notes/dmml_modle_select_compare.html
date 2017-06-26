@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>机器学习中如何“正确”的进行模型选择</title>
-<!-- 2017-02-24 Fri 22:46 -->
+<!-- 2017-06-09 Fri 14:30 -->
 <meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta  name="generator" content="Org-mode" />
 <meta  name="author" content="Marcnuth" />
@@ -211,6 +211,32 @@ for the JavaScript code in this tag.
 </li>
 </ul>
 </li>
+<li><a href="#sec-3">3. 评价过程中的关键点</a>
+<ul>
+<li><a href="#sec-3-1">3.1. 问题描述</a></li>
+<li><a href="#sec-3-2">3.2. 关键点</a>
+<ul>
+<li><a href="#sec-3-2-1">3.2.1. 测试集</a></li>
+<li><a href="#sec-3-2-2">3.2.2. 验证集</a></li>
+<li><a href="#sec-3-2-3">3.2.3. 学习曲线</a></li>
+<li><a href="#sec-3-2-4">3.2.4. 取样</a></li>
+<li><a href="#sec-3-2-5">3.2.5. 交叉检验</a></li>
+<li><a href="#sec-3-2-6">3.2.6. 测试误差的置信区间</a></li>
+<li><a href="#sec-3-2-7">3.2.7. Empirical Critical Bound</a></li>
+<li><a href="#sec-3-2-8">3.2.8. 模型之间的对比</a></li>
+<li><a href="#sec-3-2-9">3.2.9. lesion studies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-4">4. 其他经验</a>
+<ul>
+<li><a href="#sec-4-1">4.1. Test Harness</a></li>
+<li><a href="#sec-4-2">4.2. 评测指标</a></li>
+<li><a href="#sec-4-3">4.3. 数据集(测试/验证/训练)</a></li>
+<li><a href="#sec-4-4">4.4. 模型检测手段</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -343,9 +369,329 @@ for the JavaScript code in this tag.
 </div>
 </div>
 </div>
+
+
+
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> 评价过程中的关键点</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> 问题描述</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+从模型角度说，可能有这些场景：
+</p>
+<ol class="org-ol">
+<li>针对一个模型，如何评价该模型在改进前后的效果是否提升？
+</li>
+<li>针对多个模型，如何评价在这些模型中，好坏的次序是怎么样的？
+</li>
+</ol>
+
+<p>
+归结到底，就是一个问题， 如何对比不同模型之间的效果。
+</p>
+
+<p>
+从评价函数角度说，可能有这些场景：
+</p>
+<ol class="org-ol">
+<li>这对某一个问题，应该采用什么样的评价函数和评价指标？ 评价函数和指标和数据集之间的关系应该处理？
+</li>
+<li>如何应对训练误差/验证误差 和 测试误差不一致（过拟合）的问题？
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> 关键点</h3>
+<div class="outline-text-3" id="text-3-2">
+</div><div id="outline-container-sec-3-2-1" class="outline-4">
+<h4 id="sec-3-2-1"><span class="section-number-4">3.2.1</span> 测试集</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+关键问题：如何才能获得一个模型的 <b>无偏差</b> 的训练精度（也可以是其他指标）？
+</p>
+<ol class="org-ol">
+<li>在训练模型时，不能使用测试集的数据！
+</li>
+<li>测试集的标记应当是不能影响模型的！
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2-2" class="outline-4">
+<h4 id="sec-3-2-2"><span class="section-number-4">3.2.2</span> 验证集</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+将训练集拆分出一部分作为验证集
+可能存在的问题：
+</p>
+<ol class="org-ol">
+<li>更大的验证集可能更好的帮助我们计算出“无偏差”的评测指标，但是更大的训练集可以帮助模型更好的学习。因此，从训练集中拆分验证集 是一件矛盾的事情。
+</li>
+<li>单独一个训练集并不能很好的帮助我们判断模型对评测指标的影响。
+</li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3-2-3" class="outline-4">
+<h4 id="sec-3-2-3"><span class="section-number-4">3.2.3</span> 学习曲线</h4>
+<div class="outline-text-4" id="text-3-2-3">
+<p>
+关键问题：模型的训练精度和训练样本空间的大小之间是怎样的关系？
+</p>
+
+<p>
+通过学习曲线可以画出训练精度和样本空间之间的关系。具体步骤为：
+</p>
+<ol class="org-ol">
+<li>选取一个样本空间大小，随机取样作为训练集，训练模型并得到评测结果
+</li>
+<li>反复进行#1, 画出学习曲线图
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2-4" class="outline-4">
+<h4 id="sec-3-2-4"><span class="section-number-4">3.2.4</span> 取样</h4>
+<div class="outline-text-4" id="text-3-2-4">
+<p>
+在画学习曲线的问题中，我们通过随机取样来选取训练集。因此评测结果可能会受到“随机性”的影响，并且，我们无法判断这种影响的程度大小。
+</p>
+
+<p>
+针对分类算法，一种更合理的办法可能是分层抽样。例如，对于二分类问题，对每种类别都抽取一定的样本，并且保证抽取的正负样本比例与原数据集近似一致。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3-2-5" class="outline-4">
+<h4 id="sec-3-2-5"><span class="section-number-4">3.2.5</span> 交叉检验</h4>
+<div class="outline-text-4" id="text-3-2-5">
+<p>
+原理：
+将训练集分成Ｋ份，在每次迭代中，将Ｋ-1份用于训练，剩下一份用于测试验证。即为Ｋ-fold交叉检验。
+</p>
+
+
+<ul class="org-ul">
+<li>现实中，Ｋ通常取值10,但是小于10的Ｋ值也很常见，因为Ｋ值越大所花费的时间越多。
+</li>
+<li>在留一检验中， Ｋ=样本空间大小
+</li>
+<li>在分层交叉检验中，即在划分训练集的时候，采取分层采样的办法来提取每一份训练集。
+</li>
+<li>交叉检验通常被用于评价模型的好坏，当然也可以被用来帮助选取更好的模型。
+</li>
+</ul>
+
+
+<p>
+为了避免交叉检验中常出现的陷阱，要关注以下几点：
+</p>
+<ul class="org-ul">
+<li>是否数据来源是一致的？
+</li>
+</ul>
+<p>
+例如，对于某项疾病的样本空间中，有病和无病的样本来自不同的时间或者不同的医院。
+</p>
+<ul class="org-ul">
+<li>整个交叉检验过程中，是否用到了用来预测的数据？
+</li>
+</ul>
+<p>
+训练数据中不应该包含任何的验证/测试数据！
+</p>
+<ul class="org-ul">
+<li>是否已经针对模型做了足够多的优化和调整？
+</li>
+</ul>
+<p>
+如果已经没有任何优化方向，可以考虑是否需要额外更多的数据。
+</p>
+</div>
+</div>
+
+
+
+
+
+<div id="outline-container-sec-3-2-6" class="outline-4">
+<h4 id="sec-3-2-6"><span class="section-number-4">3.2.6</span> 测试误差的置信区间</h4>
+<div class="outline-text-4" id="text-3-2-6">
+<p>
+计算方法：
+前提： 对于模型Ｈ， 样本空间大小=n，n&gt;=30，分类错误的样本数为r.
+H的错误率估计值为: error(H) = r/n
+</p>
+
+<p>
+则当置信度为P时， 则真实的误分类率应该位于区间：
+$$ error(H) \pm Z_P \sqrt{\frac{error(H)(1 - error(H))}{n}}$$
+</p>
+
+<p>
+当Ｐ为95%时， Z = 1.96
+</p>
+
+<p>
+我们是如何获取得到这个置信区间的呢？主要是根据以下几点假设：
+</p>
+<ul class="org-ul">
+<li>误分类率服从于二项分布，当然，一种更普遍的办法是认为误分类率服从于正态分布
+</li>
+<li>当n&gt;=30，且p不是太极端时，使用正态分布比二项分布更好
+</li>
+<li>通过假设检验计算
+</li>
+</ul>
+
+
+<p>
+还有一种简单办法即为：
+计算多次的平均值， +- 方差作为误差区间
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2-7" class="outline-4">
+<h4 id="sec-3-2-7"><span class="section-number-4">3.2.7</span> Empirical Critical Bound</h4>
+<div class="outline-text-4" id="text-3-2-7">
+<p>
+经验之谈
+</p>
+<ol class="org-ol">
+<li>bootstrapping: 从样本空间中随机/uniformly/independently抽取样本组成训练集
+</li>
+<li>repeating: 重复1000次#1
+</li>
+<li>得到评测标准的 两侧2.5% 即为 lower/higher bound
+</li>
+</ol>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-3-2-8" class="outline-4">
+<h4 id="sec-3-2-8"><span class="section-number-4">3.2.8</span> 模型之间的对比</h4>
+<div class="outline-text-4" id="text-3-2-8">
+<p>
+针对两个模型，比较
+</p>
+<ul class="org-ul">
+<li>针对某种特定的任务，是否模型Ａ比Ｂ更好？
+</li>
+<li>针对某个训练集， 是否模型Ａ比Ｂ更好？
+</li>
+</ul>
+
+<p>
+<b>使用成对t检验！</b>
+原假设： 两个模型的一样好（准确率/其他评测指标一样）
+备择假设： 两个模型中有一个模型更好
+</p>
+
+<p>
+典型情况下， 当p &lt; 0.05 拒绝原假设
+</p>
+
+<p>
+<b>还可以使用的检验方法为 符号检验(sign test)!</b>
+</p>
+<ul class="org-ul">
+<li>如果样本数只有300个，进行10重交叉检验后，测试样本数不足30个
+</li>
+<li>数据量较小时，使用留一交叉检验的办法更好
+</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-sec-3-2-9" class="outline-4">
+<h4 id="sec-3-2-9"><span class="section-number-4">3.2.9</span> lesion studies</h4>
+<div class="outline-text-4" id="text-3-2-9">
+<p>
+通过移除算法中的某个元素(特征/处理步骤等)，我们可以通过ＲＯＣ曲线来判断模型的表现是否更好。
+例如：
+通过移除一些特征，画出不同的ＲＯＣ曲线，从而判断哪些feature是应该被移除的。
+</p>
+
+<p>
+<a href="./imgs/dmml_evaluations_lesion_studies.png">Image: ROC When Remove Features</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> 其他经验</h2>
+<div class="outline-text-2" id="text-4">
+</div><div id="outline-container-sec-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Test Harness</h3>
+<div class="outline-text-3" id="text-4-1">
+<p>
+Test Harness 是指用于测试所需要的一系列东西。在验证机器学习模型的场景中，包含了所需要使用的数据集以及一些评价指标。
+Test Harness 的目的是为了建立起良好的评测“框架”，通过这套框架得到的结果可以帮助你去选择那个模型更好，或者选择在哪个模型上进行优化。
+<b>Test Harness 是从测试框架的角度出发，关键想法使使得评价算法所使用的数据和指标都是一致的，但是不涉及具体的评价细节。</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> 评测指标</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+机器学习中，针对不同的数据集及问题，应当有不同的评测指标。
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4-3" class="outline-3">
+<h3 id="sec-4-3"><span class="section-number-3">4.3</span> 数据集(测试/验证/训练)</h3>
+<div class="outline-text-3" id="text-4-3">
+<p>
+数据集的选取很关键，直接关系到模型的结果。
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-4-4" class="outline-3">
+<h3 id="sec-4-4"><span class="section-number-3">4.4</span> 模型检测手段</h3>
+<div class="outline-text-3" id="text-4-4">
+<ol class="org-ol">
+<li>选取5-10个适合你问题的模型，并且在使用默认参数的情况下通过你的Test Harness测试出一个结果。 
+</li>
+<li>根据1的结果，你可以给自己的算法设置一个基准，如果你的调优模型比设定的基准表现还糟糕，就没有继续调优的必要了。
+</li>
+<li>当然，你也可以从1的模型中，选取一些表现较好的模型进行下一步的调优。
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
-<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-02-13 Mon 23:27</p></div>
+<div class="postamble"><p class="author">Author: Marcnuth</p><p class="email">Email: <a href="mailto:marcnuth(AT)foxmail.com">marcnuth(AT)foxmail.com</a></p><p class="date">Last Updated: 2017-06-09 Fri 14:30</p></div>
 </div>
 </body>
 </html>
